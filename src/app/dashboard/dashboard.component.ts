@@ -5,6 +5,7 @@ import { PageFooterComponent } from "../layouts/page-footer/page-footer.componen
 import { SessionStorageService } from '../services/session-storage.service';
 import { ConstantsService } from '../services/constants.service';
 import { HttpService } from '../services/http.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-dashboard',
@@ -18,9 +19,11 @@ export class DashboardComponent implements OnInit {
 
     constructor(private sessionStorage: SessionStorageService, 
         private httpService : HttpService,
+        private toastr: ToastrService,
         private constants: ConstantsService) { }
 
     ngOnInit() {
+       // this.toastr.success('Hello world!', 'Toastr fun!');
         this.initUserName();
     }
 
