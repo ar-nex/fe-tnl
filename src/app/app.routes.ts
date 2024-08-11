@@ -15,6 +15,12 @@ export const routes: Routes = [
         .then(m => m.LoginComponent)
     },
     {
+        path: "client",
+        loadComponent: () => import('./client/list-client/list-client.component')
+        .then(m => m.ListClientComponent),
+        canActivate: [authGuard]
+    },
+    {
         path: "client/new",
         loadComponent: () => import('./client/add-client/add-client.component')
         .then(m => m.AddClientComponent),

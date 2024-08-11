@@ -22,7 +22,7 @@
     text-transform: uppercase;
     border-radius: 4px;
 }
-#clemail{
+#clemail, #clpass, #clitpass, #clgstusename, #clgstpass{
     text-transform: none;
 }
 .form-input input:focus, .form-input select:focus{

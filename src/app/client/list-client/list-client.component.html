@@ -1,1 +1,7 @@
-<p>list-client works!</p>
+<app-dash-layout>
+    <section class="section dashboard mb-4">
+        <ag-grid-angular style="width: 100%; height: 500px;" class="ag-theme-alpine" [rowData]="rowData"
+            [columnDefs]="columnDefs">
+        </ag-grid-angular>
+    </section>
+</app-dash-layout>

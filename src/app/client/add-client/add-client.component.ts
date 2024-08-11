@@ -34,6 +34,11 @@ export class AddClientComponent implements OnInit {
   showGSTForm = false;
   addedClientList: clientDto[] = []
 
+  isPanDuplicate = false;
+  isAadhaarDuplicate = false;
+  isGstNoDuplicate = false;
+  isGstUserNameDuplicate = false;
+
   /**
    *
    */
@@ -53,6 +58,18 @@ export class AddClientComponent implements OnInit {
     this.clientForm.get('state')!.valueChanges.subscribe(value => {
       this.getDistricts(value);
     })
+    this.clientForm.get('pan')!.valueChanges.subscribe(() => {
+      this.isPanDuplicate = false;
+    });
+    this.clientForm.get('aadhaar')!.valueChanges.subscribe(() => {
+      this.isAadhaarDuplicate = false;
+    });
+    this.clientForm.get('gst.gstNumber')!.valueChanges.subscribe(() => {
+      this.isGstNoDuplicate = false;
+    });
+    this.clientForm.get('gst.gstUserName')!.valueChanges.subscribe(() => {
+      this.isGstUserNameDuplicate = false;
+    });
   }
 
   buildClientForm(): void {
@@ -240,7 +257,26 @@ export class AddClientComponent implements OnInit {
     .pipe(
       catchError(error => {
         console.error(error);
-        this.toastr.error("Failed to submit");
+        if (error.error?.duplicates) {
+          console.error('Duplicate errors:', error.error.duplicates);
+          this.toastr.error('Duplicate errors:', error.error.duplicates);
+          let dups = error.error.duplicates;
+          if(dups.includes("PAN")){
+            this.isPanDuplicate = true;
+          }
+          if(dups.includes("AADHAAR")){
+            this.isAadhaarDuplicate = true;
+          }
+          if(dups.includes("GST NUMBER")){
+            this.isGstNoDuplicate = true;
+          }
+          if(dups.includes("GST USER NAME")){
+            this.isGstUserNameDuplicate = true;
+          }
+          
+        }else{
+          this.toastr.error('Error:', error.error);
+        }
         this.dataSubmitting = false;
         throw error;
       })
@@ -251,6 +287,7 @@ export class AddClientComponent implements OnInit {
         this.addedClientList.unshift(this.clientDtoService.generateClientDto(this.clientForm));
         this.toastr.success("Client added successfully.");
         this.dataSubmitting = false;
+        this.resetClientForm();
       }
     )
     .add(
@@ -258,6 +295,14 @@ export class AddClientComponent implements OnInit {
     )
   }
   
+
+  resetClientForm(): void {
+    this.clientForm.reset();
+    this.showITForm = false;
+    this.showGSTForm = false;
+    this.disableFormGroup('it');
+    this.disableFormGroup('gst');
+  }
 
   validateAllFormFields(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach(field => {

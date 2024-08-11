@@ -10,6 +10,7 @@
 # General
 --------------------------------------------------------------*/
 @import 'ngx-toastr/toastr';
+
 :root {
     scroll-behavior: smooth;
   }
