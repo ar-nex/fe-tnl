@@ -1,0 +1,420 @@
+<app-dash-layout>
+  <section class="section dashboard mb-4">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Add New Client</li>
+      </ol>
+    </nav>
+
+    <section id="i1">
+      <form [formGroup]="clientForm">
+        <div class="row">
+          <div class="col">
+            <h5 class="fw-bold">Personal Info</h5>
+          </div>
+        </div>
+
+        <div class="row g-2 mb-3">
+          <div class="col-md-3">
+            <div class="form-input">
+              <label for="fname">First Name<span class="text-danger">*</span></label>
+              <input type="text" id="fname"
+                [ngClass]="{'is-invalid': clientForm.controls['firstName'].invalid && (clientForm.controls['firstName'].touched || clientForm.controls['firstName'].dirty)}"
+                formControlName="firstName">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-input">
+              <label for="mname">Middle Name</label>
+              <input type="text" name="" id="mname" formControlName="middleName"
+                [ngClass]="{'is-invalid': clientForm.controls['middleName'].invalid && (clientForm.controls['middleName'].touched || clientForm.controls['middleName'].dirty)}">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-input">
+              <label for="lname">Last Name</label>
+              <input type="text" id="lname" formControlName="lastName"
+                [ngClass]="{'is-invalid': clientForm.controls['lastName'].invalid && (clientForm.controls['lastName'].touched || clientForm.controls['lastName'].dirty)}">
+            </div>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <div class="form-input">
+              <label for="fthername">Father Name</label>
+              <input type="text" formControlName="fatherName"
+                [ngClass]="{'is-invalid': clientForm.controls['fatherName'].invalid && (clientForm.controls['fatherName'].touched || clientForm.controls['fatherName'].dirty)}"
+                id="fthername">
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-input">
+              <label for="clprof" class="mnd">Profession</label>
+              <select id="clprof" formControlName="business"
+                [ngClass]="{'is-invalid': clientForm.controls['business'].invalid && (clientForm.controls['business'].touched || clientForm.controls['business'].dirty)}">
+                <option value="">Select..</option>
+                @for (bt of businessTypes; track bt.id){
+                <option value="{{bt.id}}">{{bt.name}}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-1 d-flex align-items-end">
+            <button class="btn btn-outline-secondary shadow btn-sm" data-bs-toggle="modal"
+              data-bs-target="#businessModal">+ Profsn.</button>
+          </div>
+
+        </div>
+
+        <div class="row mb-3 g-2">
+          <div class="col-md-2">
+            <div class="form-input">
+              <label for="cldob">Date of Birth</label>
+              <input type="date" formControlName="dob"
+                [ngClass]="{'is-invalid': clientForm.controls['dob'].invalid && (clientForm.controls['dob'].touched || clientForm.controls['dob'].dirty)}"
+                id="cldob">
+            </div>
+          </div>
+
+          <div class="col-md-2">
+            <div class="form-input">
+              <label for="clgen" class="mnd">Gender</label>
+              <select id="clgen" formControlName="gender"
+                [ngClass]="{'is-invalid': clientForm.controls['gender'].invalid && (clientForm.controls['gender'].touched || clientForm.controls['gender'].dirty)}">
+                <option value="">Select..</option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+                <option value="O">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-2">
+            <div class="form-input">
+              <label for="clmob" class="mnd">Mobile</label>
+              <input type="text" formControlName="mobile"
+                [ngClass]="{'is-invalid': clientForm.controls['mobile'].invalid && (clientForm.controls['mobile'].touched || clientForm.controls['mobile'].dirty)}"
+                id="clmob" placeholder="10 digits only">
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="form-input">
+              <label for="clmob">Aadhaar</label>
+              <input type="text" formControlName="aadhaar"
+                [ngClass]="{'is-invalid': clientForm.controls['aadhaar'].invalid && (clientForm.controls['aadhaar'].touched || clientForm.controls['aadhaar'].dirty)}"
+                id="clmob" placeholder="12 digits only">
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <div class="form-input">
+              <label for="clemail" class="mnd">Email</label>
+              <input type="email" formControlName="email"
+                [ngClass]="{'is-invalid': clientForm.controls['email'].invalid && (clientForm.controls['email'].touched || clientForm.controls['email'].dirty)}"
+                id="clemail">
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="form-input">
+              <label for="clpass" class="mnd">Email's password</label>
+              <input type="text" formControlName="password"
+                [ngClass]="{'is-invalid': clientForm.controls['password'].invalid && (clientForm.controls['password'].touched || clientForm.controls['password'].dirty)}"
+                id="clpass">
+            </div>
+          </div>
+
+          <div class="col-md-2">
+            <div class="form-input">
+              <label for="clpan" class="mnd">PAN</label>
+              <input type="text" formControlName="pan"
+                [ngClass]="{'is-invalid': clientForm.controls['pan'].invalid && (clientForm.controls['pan'].touched || clientForm.controls['pan'].dirty)}"
+                id="clpan">
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row mb-3">
+          <div class="col">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="pan-adhar-link"
+                formControlName="panadhrLink">
+              <label class="form-check-label fw-bold" for="pan-adhar-link">
+                Has PAN linked with aadhaar?
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-4">
+          <div class="col">
+            <h5 class="fw-bold">Address</h5>
+          </div>
+        </div>
+
+
+        <div class="row mb-3">
+          <div class="col-md-3">
+            <div class="form-input">
+              <label for="clstate" class="mnd">State</label>
+              <select id="clstate" formControlName="state"
+                [ngClass]="{'is-invalid': clientForm.controls['state'].invalid && (clientForm.controls['state'].touched || clientForm.controls['state'].dirty)}">
+                <option value="">Select..</option>
+                @for (state of states; track state.code){
+                <option value="{{state.id}}">{{state.name}}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="form-input">
+              <label for="cldist" class="mnd">District</label>
+              <select id="cldist" formControlName="dist"
+                [ngClass]="{'is-invalid': clientForm.controls['dist'].invalid && (clientForm.controls['dist'].touched || clientForm.controls['dist'].dirty)}">
+                <option value="">Select..</option>
+                @for (dist of districts; track dist.name){
+                <option value="{{dist.id}}">{{dist.name}}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="form-input">
+              <label for="clpin" class="mnd">PIN</label>
+              <input type="text" formControlName="pin"
+                [ngClass]="{'is-invalid': clientForm.controls['pin'].invalid && (clientForm.controls['pin'].touched || clientForm.controls['pin'].dirty)}"
+                id="clpin">
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3 g-2">
+          <div class="col-md-2">
+            <div class="form-input">
+              <label for="cladr1">Addr. Lane1</label>
+              <input type="text" formControlName="addr1"
+                [ngClass]="{'is-invalid': clientForm.controls['addr1'].invalid && (clientForm.controls['addr1'].touched || clientForm.controls['addr1'].dirty)}"
+                id="cladr1">
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-input">
+              <label for="cladr2">Addr. Lane2</label>
+              <input type="text" formControlName="addr2"
+                [ngClass]="{'is-invalid': clientForm.controls['addr2'].invalid && (clientForm.controls['addr2'].touched || clientForm.controls['addr2'].dirty)}"
+                id="cladr2">
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-input">
+              <label for="clpo">PO</label>
+              <input type="text" formControlName="po"
+                [ngClass]="{'is-invalid': clientForm.controls['po'].invalid && (clientForm.controls['po'].touched || clientForm.controls['po'].dirty)}"
+                id="clpo">
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="form-input">
+              <label for="clps">Police Station</label>
+              <input type="text" formControlName="ps"
+                [ngClass]="{'is-invalid': clientForm.controls['ps'].invalid && (clientForm.controls['ps'].touched || clientForm.controls['ps'].dirty)}"
+                id="clps">
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row mt-4">
+          <div class="col">
+            <h5 class="fw-bold">Tax details</h5>
+          </div>
+        </div>
+
+
+        <div class="row mb-3">
+          <div class="col-md-3">
+            <div class="form-input">
+              <label for="cltyp" class="mnd">Client Type</label>
+              <select id="cltyp" formControlName="clientType"
+                [ngClass]="{'is-invalid': clientForm.controls['clientType'].invalid && (clientForm.controls['clientType'].touched || clientForm.controls['clientType'].dirty)}">
+                <option value="" selected>Select Client for..</option>
+                <option value="1">IT</option>
+                <option value="0">GST</option>
+                <option value="2">IT &amp; GST (both)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        @if(showITForm){
+        <section formGroupName="it">
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <div class="form-input">
+                <label for="clittype" class="mnd">IT Type</label>
+                <select id="clittype" formControlName="itType"
+                  [ngClass]="{'is-invalid': clientForm.get('it.itType')!.invalid && (clientForm.get('it.itType')!.touched || clientForm.get('it.itType')!.dirty)}">
+                  <option value="" selected>Choose ..</option>
+                  <option value="A">Audit</option>
+                  <option value="N">Non Audit</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-input">
+                <label for="clitpass" class="mnd">IT Password</label>
+                <input type="text" formControlName="itPassword"
+                  [ngClass]="{'is-invalid': clientForm.get('it.itPassword')!.invalid && (clientForm.get('it.itPassword')!.touched || clientForm.get('it.itPassword')!.dirty)}"
+                  id="clitpass">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-input">
+                <label for="clitfile">IT File No.</label>
+                <input type="text" formControlName="itFileNo"
+                  [ngClass]="{'is-invalid': clientForm.get('it.itFileNo')!.invalid && (clientForm.get('it.itFileNo')!.touched || clientForm.get('it.itFileNo')!.dirty)}"
+                  id="clitfile">
+              </div>
+            </div>
+          </div>
+        </section>
+        }
+
+        @if(showGSTForm){
+        <section formGroupName="gst">
+          <div class="row mb-3 g-2">
+            <div class="col-md-2">
+              <div class="form-input">
+                <label for="clgsttype" class="mnd">GST Type</label>
+                <select id="clgsttype" formControlName="gstType"
+                  [ngClass]="{'is-invalid': clientForm.get('gst.gstType')!.invalid && (clientForm.get('gst.gstType')!.touched || clientForm.get('gst.gstType')!.dirty)}">
+                  <option value="" selected>Select..</option>
+                  <option value="Regular">Regular</option>
+                  <option value="Composition">Composition</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-input">
+                <label for="clgstaudit">Audit Type</label>
+                <select id="clgstaudit" formControlName="auditable">
+                  <option value="" selected>Select..</option>
+                  <option value="A">Audit</option>
+                  <option value="N">Non Audi</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <div class="form-input">
+                <label for="clitfile" class="mnd">GST No.</label>
+                <input type="text" formControlName="gstNumber"
+                  [ngClass]="{'is-invalid': clientForm.get('gst.gstNumber')!.invalid && (clientForm.get('gst.gstNumber')!.touched || clientForm.get('gst.gstNumber')!.dirty)}"
+                  id="clitfile">
+              </div>
+            </div>
+
+            <div class="col-md-2">
+              <div class="form-input">
+                <label for="clgstdate" class="mnd">GST Reg. Date</label>
+                <input type="date" formControlName="gstregDate"
+                  [ngClass]="{'is-invalid': clientForm.get('gst.gstregDate')!.invalid && (clientForm.get('gst.gstregDate')!.touched || clientForm.get('gst.gstregDate')!.dirty)}"
+                  id="clgstdate">
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <div class="form-input">
+                <label for="clgstusename" class="mnd">GST Username</label>
+                <input type="text" formControlName="gstUserName"
+                  [ngClass]="{'is-invalid': clientForm.get('gst.gstUserName')!.invalid && (clientForm.get('gst.gstUserName')!.touched || clientForm.get('gst.gstUserName')!.dirty)}"
+                  id="clgstusename">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-input">
+                <label for="clgstpass" class="mnd">GST Password</label>
+                <input type="text" formControlName="gstPassword"
+                  [ngClass]="{'is-invalid': clientForm.get('gst.gstPassword')!.invalid && (clientForm.get('gst.gstPassword')!.touched || clientForm.get('gst.gstPassword')!.dirty)}"
+                  id="clgstpass">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="form-input">
+                <label for="clgstfile">GST File No.</label>
+                <input type="text" formControlName="gstFileNo"
+                  [ngClass]="{'is-invalid': clientForm.get('gst.gstFileNo')!.invalid && (clientForm.get('gst.gstFileNo')!.touched || clientForm.get('gst.gstFileNo')!.dirty)}"
+                  id="clgstfile">
+              </div>
+            </div>
+          </div>
+        </section>
+        }
+
+        <div class="row my-3">
+          <div class="col-md-3">
+            @if(dataSubmitting){
+              <button class="button-52" type="button" disabled>
+                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                <span role="status">Saving...</span>
+              </button>
+              }@else {
+              <button class="button-52" type="submit" (click)="onSubmit()">Submit</button>
+              }
+
+          </div>
+        </div>
+      </form>
+    </section>
+
+ 
+
+
+
+    <div class="modal fade" id="businessModal" tabindex="-1" aria-labelledby="businessModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="businessModalLabel">Add new profession</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #closeBtn></button>
+          </div>
+          <div class="modal-body">
+            <input type="text" class="form-control" [(ngModel)]="newBusiness" id="new-business">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            @if(newBusinessAdding){
+            <button type="button" class="btn btn-primary" disabled>
+              <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+              <span role="status">Adding..</span>
+            </button>
+            }@else{
+            <button type="button" class="btn btn-primary" (click)="addNewBusiness()">Add</button>
+            }
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <app-added-client-list [dataSource]="addedClientList"></app-added-client-list>
+
+
+  </section>
+</app-dash-layout>

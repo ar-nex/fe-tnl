@@ -1,4 +1,45 @@
-<app-top-header [userName]="username"></app-top-header>
-<app-left-aside></app-left-aside>
+<app-dash-layout>
 
-<app-page-footer></app-page-footer>
+    <section class="section dashboard">
+        @if(initialDataReceived){
+            <section>
+                <div class="row row-cols-2 row-cols-md-4 g-4">
+                    @for (dto of clientsCountdtos; track dto.title){
+                    <div class="col">
+                        <div class="card shadow">
+                            <div class="card-body pb-0">
+                                <div class="text-center p-2">
+                                    <h2 class="display-6">{{dto.noOfClients}}</h2>
+                                    <h5 class="m-0 text-uppercase">{{dto.title}} Client</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    }
+        
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ngx-charts-bar-vertical-2d [view]="[500,300]" [scheme]="colorScheme" [results]="multiLinkingData" [gradient]="true" [xAxis]="true"
+                            [yAxis]="true" [legend]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" [showDataLabel]="true"
+                            [xAxisLabel]="'Clients'" [yAxisLabel]="'LINKING'" [legendTitle]="'Status'">
+                        </ngx-charts-bar-vertical-2d>
+                    </div>
+                    <div class="col-md-6">
+                        <ngx-charts-bar-vertical-2d [view]="[500,300]" [scheme]="colorScheme" [results]="multiActiveDate" [gradient]="true" [xAxis]="true"
+                            [yAxis]="true" [legend]="true" [showXAxisLabel]="true" [showYAxisLabel]="true" [showDataLabel]="true"
+                            [xAxisLabel]="'Clients'" [yAxisLabel]="'Activeness'" [legendTitle]="'Status'">
+                        </ngx-charts-bar-vertical-2d>
+                    </div>
+                </div>
+            </section>
+        }@else{
+            <div class="row">
+                <div class="col">
+                    <ngx-skeleton-loader [theme]="{height: '50px'}" [count]="4" appearance=""></ngx-skeleton-loader>
+                </div>
+            </div>
+        }
+    </section>
+
+</app-dash-layout>

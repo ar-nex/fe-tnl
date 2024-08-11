@@ -53,7 +53,6 @@ export class LoginComponent {
         .subscribe(
           (res: any) => {
             this.submitting = false;
-            console.log(res);
             this.sessionStorageService.set(this.consstants.SS_TOKEN_KEY, res.token);
             this.sessionStorageService.set(this.consstants.SS_USER_NAME, res.userName);
             this.sessionStorageService.set(this.consstants.SS_USER_ID, res.userId);

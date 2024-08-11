@@ -1,0 +1,33 @@
+@if(dataSource.length > 0){
+<hr class="my-4">
+
+<h4 class="mt-4">Presently added client(s)</h4>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Email Password</th>
+                <th scope="col">Mobile</th>
+                <th scope="col">PAN</th>
+                <th scope="col">Client Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(cl of dataSource; track $index){
+            <tr>
+                <td>{{$index + 1}}</td>
+                <td>{{getFullName(cl)}}</td>
+                <td>{{cl.email}}</td>
+                <td>{{cl.password}}</td>
+                <td>{{cl.mob1}}</td>
+                <td>{{cl.pan}}</td>
+                <td>{{getClientType(cl)}}</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+}
