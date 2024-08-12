@@ -18,11 +18,32 @@
       </li><!-- End Login Page Nav -->
 
       <li class="nav-item">
-        <a class="nav-link collapsed" routerLink="/client">
-          <i class="bi bi-search"></i>
-          <span>List</span>
+        <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-layout-text-window-reverse"></i><span>List</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
-      </li>
+        <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a [routerLink]="['/client']" [queryParams]="{type: 'it'}">
+              <i class="bi bi-circle"></i><span>IT</span>
+            </a>
+          </li>
+          <li>
+            <a [routerLink]="['/client']" [queryParams]="{type: 'gst'}">
+              <i class="bi bi-circle"></i><span>GST</span>
+            </a>
+          </li>
+          <li>
+            <a [routerLink]="['/client']" [queryParams]="{type: 'gst-it'}">
+              <i class="bi bi-circle"></i><span>GST-IT</span>
+            </a>
+          </li>
+          <li>
+            <a [routerLink]="['/client']" [queryParams]="{type: 'all'}">
+              <i class="bi bi-circle"></i><span>All</span>
+            </a>
+          </li>
+        </ul>
+      </li><!-- End Client List Nav -->
 
       <li class="nav-item">
         <a class="nav-link collapsed" routerLink="/client/new">
@@ -31,28 +52,7 @@
         </a>
       </li>
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-layout-text-window-reverse"></i><span>List</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="tables-general.html">
-              <i class="bi bi-circle"></i><span>All</span>
-            </a>
-          </li>
-          <li>
-            <a href="tables-data.html">
-              <i class="bi bi-circle"></i><span>IT</span>
-            </a>
-          </li>
-          <li>
-            <a href="tables-data.html">
-              <i class="bi bi-circle"></i><span>GST</span>
-            </a>
-          </li>
-        </ul>
-      </li><!-- End Tables Nav -->
+      
 
      
 

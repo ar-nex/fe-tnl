@@ -1,7 +1,44 @@
 <app-dash-layout>
     <section class="section dashboard mb-4">
-        <ag-grid-angular style="width: 100%; height: 500px;" class="ag-theme-alpine" [rowData]="rowData"
-            [columnDefs]="columnDefs">
-        </ag-grid-angular>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
+                <li class="breadcrumb-item" aria-current="page">List</li>
+                <li class="breadcrumb-item active" aria-current="page">{{clientType.toUpperCase() + ' List'}}</li>
+            </ol>
+        </nav>
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body pt-3">
+                        <h4 class="card-title">{{'Showing '+clientType.toUpperCase() + ' List'}}</h4>
+                        @if(clientType == 'it'){
+                        <ag-grid-angular style="width: 100%; height: 500px;" class="ag-theme-alpine"
+                            [rowData]="itClients" [columnDefs]="colomnDefsIT" (gridReady)="onGridReady($event)" (cellClicked)="onCellClicked($event)">
+                        </ag-grid-angular>
+                        }@else if(clientType == 'gst'){
+                        <ag-grid-angular style="width: 100%; height: 500px;" class="ag-theme-alpine"
+                            [rowData]="gstClients" [columnDefs]="colomnDefsGST" (gridReady)="onGridReady($event)" (cellClicked)="onCellClicked($event)">
+                        </ag-grid-angular>
+                        }@else if(clientType == 'gst-it'){
+                        <ag-grid-angular style="width: 100%; height: 500px;" class="ag-theme-alpine"
+                            [rowData]="gstClients" [columnDefs]="colomnDefsGST" (gridReady)="onGridReady($event)" (cellClicked)="onCellClicked($event)">
+                        </ag-grid-angular>
+                        }@else if(clientType == 'all'){
+                        <ag-grid-angular style="width: 100%; height: 500px;" class="ag-theme-alpine"
+                            [rowData]="allClients" [columnDefs]="colomnDefsALL" (gridReady)="onGridReady($event)" (cellClicked)="onCellClicked($event)">
+                        </ag-grid-angular>
+                        }@else{
+
+                        }
+
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary" (click)="exportToCsv()"><i class="bi bi-file-earmark-spreadsheet"></i> Export to Excel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </section>
 </app-dash-layout>

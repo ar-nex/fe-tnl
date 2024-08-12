@@ -1,25 +1,254 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AgGridModule } from 'ag-grid-angular';
-import { ColDef } from 'ag-grid-community';
+import { ColDef, GridOptions } from 'ag-grid-community';
 import { DashLayoutComponent } from '../../dash-layout/dash-layout.component';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { FullNameService } from '../../services/full-name.service';
+import { ClientBase, GstDtoRead, ItDtoRead, ItGstDtoRead } from '../../dto/client/ClientListDto';
+import { HttpService } from '../../services/http.service';
+import { catchError } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-list-client',
   standalone: true,
-  imports: [AgGridModule, DashLayoutComponent],
+  imports: [AgGridModule, DashLayoutComponent, RouterLink],
   templateUrl: './list-client.component.html',
   styleUrl: './list-client.component.css'
 })
-export class ListClientComponent {
-  columnDefs: ColDef[] = [
-    { field: 'make', headerName: 'Make', sortable: true, filter: true },
-    { field: 'model', headerName: 'Model', sortable: true, filter: true },
-    { field: 'price', headerName: 'Price', sortable: true, filter: true }
-  ];
+export class ListClientComponent implements OnInit {
+  clientType!: string
+  gstClients: GstDtoRead[] = [];
+  itClients: ItDtoRead[] = [];
+  itGstClients: ItGstDtoRead[] = [];
+  allClients: ClientBase[] = [];
+  gettingData = false;
+  gridOptions!: GridOptions;
+  private gridApi: any;
 
-  rowData = [
-    { make: 'Toyota', model: 'Celica', price: 35000 },
-    { make: 'Ford', model: 'Mondeo', price: 32000 },
-    { make: 'Porsche', model: 'Boxster', price: 72000 }
-  ];
+  constructor(private activatedRoute: ActivatedRoute,
+    private httpService: HttpService,
+    private toster: ToastrService,
+    private fullNameService: FullNameService) { }
+
+  ngOnInit(): void {
+    this.getList();
+  }
+  getList(): void {
+    this.activatedRoute.queryParams.subscribe(params => {
+      const qstring = params['type'];
+      this.clientType = qstring;
+      let endpoint = '';
+
+      switch (this.clientType) {
+        case 'gst':
+          endpoint = 'clients/gst';
+          break;
+        case 'it':
+          endpoint = 'clients/it';
+          break;
+        case 'gst-it':
+          endpoint = 'clients/gst-it';
+          break;
+        case 'all':
+          endpoint = 'clients/all';
+          break;
+        default:
+          return;
+      }
+
+      this.gettingData = true;
+      this.httpService.get(endpoint)
+        .pipe(
+          catchError(error => {
+            this.toster.error("Sorry! Failed to get data");
+            this.gettingData = false;
+            throw error;
+          })
+        )
+        .subscribe(
+          (res: any) => {
+            if (this.clientType === 'gst') {
+              this.gstClients = res;
+              this.itClients = [];
+              this.itGstClients = [];
+              this.allClients = [];
+            } else if (this.clientType === 'it') {
+              this.itClients = res;
+              this.gstClients = [];
+              this.itGstClients = [];
+              this.allClients = [];
+            } else if (this.clientType === 'gst-it') {
+              this.itGstClients = res;
+              this.itClients = [];
+              this.gstClients = [];
+              this.allClients = [];
+            } else if (this.clientType == 'all') {
+              this.allClients = res;
+              this.gstClients = [];
+              this.itClients = [];
+              this.itGstClients = [];
+            }
+            this.gettingData = false;
+          }
+        )
+        .add(() => { this.gettingData = false; });
+    });
+  }
+
+  colomnDefsIT: ColDef[] = [
+    {
+      valueGetter: params => params.node ? params.node.rowIndex! + 1 : 0,
+      headerName: 'Sl No.', sortable: false, filter: false, width: 60, pinned: 'left'
+    },
+    {
+      valueGetter: params => this.fullName(params.data.fname, params.data.mname, params.data.lname),
+      headerName: 'Name', sortable: true, filter: true, pinned: 'left'
+    },
+    { field: 'father', headerName: 'Father', sortable: false, filter: true },
+    { field: 'mob1', headerName: 'Mobile', sortable: false, filter: true },
+    { field: 'email', headerName: 'Email', sortable: false, filter: true },
+    { field: 'password', headerName: 'Email Password', sortable: false, filter: true },
+    { field: 'pan', headerName: 'PAN', sortable: false, filter: true },
+    { field: 'passwordIt', headerName: 'IT password', sortable: false, filter: true },
+    { field: 'fileNoIt', headerName: 'File No.', sortable: true, filter: true },
+    {
+      field: 'isActive',
+      headerName: 'Active',
+      sortable: true,
+      filter: true,
+      valueFormatter: params => params.value ? 'Active' : 'Deactivated'
+    },
+  ]
+
+
+  colomnDefsGST: ColDef[] = [
+    {
+      valueGetter: params => params.node ? params.node.rowIndex! + 1 : 0,
+      headerName: 'Sl No.', sortable: false, filter: false, width: 60, pinned: 'left'
+    },
+    {
+      valueGetter: params => this.fullName(params.data.fname, params.data.mname, params.data.lname),
+      headerName: 'Name', sortable: true, filter: true, pinned: 'left'
+    },
+    { field: 'father', headerName: 'Father', sortable: false, filter: true },
+    { field: 'mob1', headerName: 'Mobile', sortable: false, filter: true },
+    { field: 'email', headerName: 'Email', sortable: false, filter: true },
+    { field: 'password', headerName: 'Email Password', sortable: false, filter: true },
+    { field: 'gstUserName', headerName: 'GST Username', sortable: false, filter: true },
+    { field: 'gstPassword', headerName: 'GST password', sortable: false, filter: true },
+    { field: 'gstNumber', headerName: 'GST No.', sortable: false, filter: true },
+    { field: 'gstFileNo', headerName: 'File No.', sortable: true, filter: true },
+    {
+      field: 'isActive',
+      headerName: 'Active',
+      sortable: true,
+      filter: true,
+      valueFormatter: params => params.value ? 'Active' : 'Deactivated'
+    },
+  ]
+
+  colomnDefsITGST: ColDef[] = [
+    {
+      valueGetter: params => params.node ? params.node.rowIndex! + 1 : 0,
+      headerName: 'Sl No.', sortable: false, filter: false, width: 60, pinned: 'left'
+    },
+    {
+      valueGetter: params => this.fullName(params.data.fname, params.data.mname, params.data.lname),
+      headerName: 'Name', sortable: true, filter: true, pinned: 'left'
+    },
+    { field: 'father', headerName: 'Father', sortable: false, filter: true },
+    { field: 'mob1', headerName: 'Mobile', sortable: false, filter: true },
+    { field: 'email', headerName: 'Email', sortable: false, filter: true },
+    { field: 'password', headerName: 'Email Password', sortable: false, filter: true },
+    { field: 'gstUserName', headerName: 'GST Username', sortable: false, filter: true },
+    { field: 'gstPassword', headerName: 'GST password', sortable: false, filter: true },
+    { field: 'gstNumber', headerName: 'GST No.', sortable: false, filter: true },
+    { field: 'gstFileNo', headerName: 'File No.', sortable: true, filter: true },
+    { field: 'pan', headerName: 'PAN', sortable: false, filter: true },
+    { field: 'passwordIt', headerName: 'IT password', sortable: false, filter: true },
+    { field: 'fileNoIt', headerName: 'File No.', sortable: true, filter: true },
+    {
+      field: 'isActive',
+      headerName: 'Active',
+      sortable: true,
+      filter: true,
+      valueFormatter: params => params.value ? 'Active' : 'Deactivated'
+    },
+  ]
+
+  colomnDefsALL: ColDef[] = [
+    {
+      valueGetter: params => params.node ? params.node.rowIndex! + 1 : 0,
+      headerName: 'Sl No.', sortable: false, filter: false, width: 60, pinned: 'left'
+    },
+    {
+      valueGetter: params => this.fullName(params.data.fname, params.data.mname, params.data.lname),
+      headerName: 'Name', sortable: true, filter: true, pinned: 'left'
+    },
+    { field: 'father', headerName: 'Father', sortable: false, filter: true },
+    { field: 'mob1', headerName: 'Mobile', sortable: false, filter: true },
+    { field: 'email', headerName: 'Email', sortable: false, filter: true },
+    { field: 'password', headerName: 'Email Password', sortable: false, filter: true },
+    { field: 'pan', headerName: 'PAN', sortable: false, filter: true },
+    { field: 'aadhaar', headerName: 'Aadhaar', sortable: false, filter: true },
+    {
+      field: 'clType',
+      headerName: 'Type',
+      sortable: false,
+      filter: true,
+      valueFormatter: params => {
+        switch (params.value) {
+          case 0:
+            return 'GST';
+          case 1:
+            return 'IT';
+          case 2:
+            return 'GST-IT';
+          default:
+            return '';
+        }
+      }
+    },
+    {
+      field: 'isActive',
+      headerName: 'Active',
+      sortable: true,
+      filter: true,
+      valueFormatter: params => params.value ? 'Active' : 'Deactivated'
+    },
+  ]
+
+  fullName(fname: string, mname: string | null, lname: string | null): string {
+    return this.fullNameService.getFullName(fname, mname, lname);
+  }
+
+  async onCellClicked(event: any) {
+    const rowIndex = event.node.rowIndex;
+    const colField = event.colDef.field;
+    const cellValue = event.value; // Directly get the cell value from the event
+
+    console.log(`Row Index: ${rowIndex}, Column Field: ${colField}, Cell Value: ${cellValue}`);
+
+    try {
+      await navigator.clipboard.writeText(cellValue);
+      console.log('Cell value copied to clipboard');
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  }
+
+  onGridReady(params:any) {
+    this.gridApi = params.api;
+  }
+
+  exportToCsv() {
+    const params = {
+      skipHeader: false,
+      skipFooter: true,
+      skipGroups: true,
+      fileName: this.clientType + "_" + "export.csv",
+    };
+    this.gridApi.exportDataAsCsv(params);
+  }
 }
