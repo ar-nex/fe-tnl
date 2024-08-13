@@ -32,4 +32,10 @@ export const routes: Routes = [
         .then(m => m.SearchClientComponent),
         canActivate: [authGuard]
     },
+    {
+        path: "client/edit/:id",
+        loadComponent: () => import('./client/edit-client/edit-client.component')
+        .then(m => m.EditClientComponent),
+        canActivate: [authGuard]
+    },
 ];

@@ -106,17 +106,36 @@ export class ListClientComponent implements OnInit {
       headerName: 'Name', sortable: true, filter: true, pinned: 'left'
     },
     { field: 'father', headerName: 'Father', sortable: false, filter: true },
+    { field: 'fileNoIt', headerName: 'File No.', sortable: true, filter: true },
     { field: 'mob1', headerName: 'Mobile', sortable: false, filter: true },
     { field: 'email', headerName: 'Email', sortable: false, filter: true },
     { field: 'password', headerName: 'Email Password', sortable: false, filter: true },
+    {
+      field: 'email',
+      headerName: 'Mail Link',
+      width: 100,
+      cellRenderer: (params: { value: any; }) => {
+        const email = params.value;
+        const mailLink = this.getEmailVendor(email);
+        return `<a href="${mailLink}" target="_blank">Go</a>`;
+      }
+    },
     { field: 'pan', headerName: 'PAN', sortable: false, filter: true },
     { field: 'passwordIt', headerName: 'IT password', sortable: false, filter: true },
-    { field: 'fileNoIt', headerName: 'File No.', sortable: true, filter: true },
+    {
+      field: 'id',
+      headerName: 'Edit',
+      width: 60,
+      cellRenderer: (params: { value: any; }) => {
+        return `<a href="/client/edit/${params.value}">Edit</a>`;
+      }
+    },
     {
       field: 'isActive',
       headerName: 'Active',
       sortable: true,
       filter: true,
+      width: 100,
       valueFormatter: params => params.value ? 'Active' : 'Deactivated'
     },
   ]
@@ -132,18 +151,37 @@ export class ListClientComponent implements OnInit {
       headerName: 'Name', sortable: true, filter: true, pinned: 'left'
     },
     { field: 'father', headerName: 'Father', sortable: false, filter: true },
+    { field: 'gstFileNo', headerName: 'File No.', sortable: true, filter: true },
     { field: 'mob1', headerName: 'Mobile', sortable: false, filter: true },
     { field: 'email', headerName: 'Email', sortable: false, filter: true },
     { field: 'password', headerName: 'Email Password', sortable: false, filter: true },
+    {
+      field: 'email',
+      headerName: 'Mail Link',
+      width: 100,
+      cellRenderer: (params: { value: any; }) => {
+        const email = params.value;
+        const mailLink = this.getEmailVendor(email);
+        return `<a href="${mailLink}" target="_blank">Go</a>`;
+      }
+    },
     { field: 'gstUserName', headerName: 'GST Username', sortable: false, filter: true },
     { field: 'gstPassword', headerName: 'GST password', sortable: false, filter: true },
     { field: 'gstNumber', headerName: 'GST No.', sortable: false, filter: true },
-    { field: 'gstFileNo', headerName: 'File No.', sortable: true, filter: true },
+    {
+      field: 'id',
+      headerName: 'Edit',
+      width: 60,
+      cellRenderer: (params: { value: any; }) => {
+        return `<a href="/client/edit/${params.value}">Edit</a>`;
+      }
+    },
     {
       field: 'isActive',
       headerName: 'Active',
       sortable: true,
       filter: true,
+      width: 100,
       valueFormatter: params => params.value ? 'Active' : 'Deactivated'
     },
   ]
@@ -158,21 +196,40 @@ export class ListClientComponent implements OnInit {
       headerName: 'Name', sortable: true, filter: true, pinned: 'left'
     },
     { field: 'father', headerName: 'Father', sortable: false, filter: true },
+    { field: 'fileNoIt', headerName: 'File No.', sortable: true, filter: true },
     { field: 'mob1', headerName: 'Mobile', sortable: false, filter: true },
     { field: 'email', headerName: 'Email', sortable: false, filter: true },
     { field: 'password', headerName: 'Email Password', sortable: false, filter: true },
+    {
+      field: 'email',
+      headerName: 'Mail Link',
+      width: 100,
+      cellRenderer: (params: { value: any; }) => {
+        const email = params.value;
+        const mailLink = this.getEmailVendor(email);
+        return `<a href="${mailLink}" target="_blank">Go</a>`;
+      }
+    },
     { field: 'gstUserName', headerName: 'GST Username', sortable: false, filter: true },
     { field: 'gstPassword', headerName: 'GST password', sortable: false, filter: true },
     { field: 'gstNumber', headerName: 'GST No.', sortable: false, filter: true },
     { field: 'gstFileNo', headerName: 'File No.', sortable: true, filter: true },
     { field: 'pan', headerName: 'PAN', sortable: false, filter: true },
     { field: 'passwordIt', headerName: 'IT password', sortable: false, filter: true },
-    { field: 'fileNoIt', headerName: 'File No.', sortable: true, filter: true },
+    {
+      field: 'id',
+      headerName: 'Edit',
+      width: 60,
+      cellRenderer: (params: { value: any; }) => {
+        return `<a href="/client/edit/${params.value}">Edit</a>`;
+      }
+    },
     {
       field: 'isActive',
       headerName: 'Active',
       sortable: true,
       filter: true,
+      width: 100,
       valueFormatter: params => params.value ? 'Active' : 'Deactivated'
     },
   ]
@@ -186,17 +243,12 @@ export class ListClientComponent implements OnInit {
       valueGetter: params => this.fullName(params.data.fname, params.data.mname, params.data.lname),
       headerName: 'Name', sortable: true, filter: true, pinned: 'left'
     },
-    { field: 'father', headerName: 'Father', sortable: false, filter: true },
-    { field: 'mob1', headerName: 'Mobile', sortable: false, filter: true },
-    { field: 'email', headerName: 'Email', sortable: false, filter: true },
-    { field: 'password', headerName: 'Email Password', sortable: false, filter: true },
-    { field: 'pan', headerName: 'PAN', sortable: false, filter: true },
-    { field: 'aadhaar', headerName: 'Aadhaar', sortable: false, filter: true },
     {
       field: 'clType',
       headerName: 'Type',
       sortable: false,
       filter: true,
+      width: 100,
       valueFormatter: params => {
         switch (params.value) {
           case 0:
@@ -210,11 +262,37 @@ export class ListClientComponent implements OnInit {
         }
       }
     },
+    { field: 'father', headerName: 'Father', sortable: false, filter: true },
+    { field: 'mob1', headerName: 'Mobile', sortable: false, filter: true },
+    { field: 'email', headerName: 'Email', sortable: false, filter: true },
+    { field: 'password', headerName: 'Email Password', sortable: false, filter: true },
+    {
+      field: 'email',
+      headerName: 'Mail Link',
+      width: 100,
+      cellRenderer: (params: { value: any; }) => {
+        const email = params.value;
+        const mailLink = this.getEmailVendor(email);
+        return `<a href="${mailLink}" target="_blank">Go</a>`;
+      }
+    },
+    { field: 'pan', headerName: 'PAN', sortable: false, filter: true },
+    { field: 'aadhaar', headerName: 'Aadhaar', sortable: false, filter: true },
+    
+    {
+      field: 'id',
+      headerName: 'Edit',
+      width: 60,
+      cellRenderer: (params: { value: any; }) => {
+        return `<a href="/client/edit/${params.value}">Edit</a>`;
+      }
+    },
     {
       field: 'isActive',
       headerName: 'Active',
       sortable: true,
       filter: true,
+      width: 100,
       valueFormatter: params => params.value ? 'Active' : 'Deactivated'
     },
   ]
@@ -236,6 +314,24 @@ export class ListClientComponent implements OnInit {
     } catch (err) {
       console.error('Failed to copy text: ', err);
     }
+  }
+
+  getEmailVendor(email: string):string{
+    const mailMap = new Map();
+    mailMap.set("@gmail", "https://mail.google.com");
+    mailMap.set("@yahoo", "https://login.yahoo.com");
+    mailMap.set("@hotmail", "https://login.microsoftonline.com/");
+    mailMap.set("@outlook", "https://login.microsoftonline.com/");
+    mailMap.set("@live", "https://login.microsoftonline.com/");
+    mailMap.set("@rediffmail", "https://mail.rediff.com");
+    mailMap.set("@mail", "https://www.mail.com");
+    let external_site = "";
+    for (let [key, value] of mailMap) {
+        if (email.indexOf(key) > -1) {
+            external_site = value;
+        }
+    }
+    return external_site;
   }
 
   onGridReady(params:any) {
