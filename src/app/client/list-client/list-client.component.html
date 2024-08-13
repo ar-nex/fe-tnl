@@ -22,11 +22,15 @@
                         </ag-grid-angular>
                         }@else if(clientType == 'gst-it'){
                         <ag-grid-angular style="width: 100%; height: 500px;" class="ag-theme-alpine"
-                            [rowData]="gstClients" [columnDefs]="colomnDefsGST" (gridReady)="onGridReady($event)" (cellClicked)="onCellClicked($event)">
+                            [rowData]="itGstClients" [columnDefs]="colomnDefsITGST" (gridReady)="onGridReady($event)" (cellClicked)="onCellClicked($event)">
                         </ag-grid-angular>
                         }@else if(clientType == 'all'){
                         <ag-grid-angular style="width: 100%; height: 500px;" class="ag-theme-alpine"
-                            [rowData]="allClients" [columnDefs]="colomnDefsALL" (gridReady)="onGridReady($event)" (cellClicked)="onCellClicked($event)">
+                            [rowData]="allClients" 
+                            [columnDefs]="colomnDefsALL" 
+                            (gridReady)="onGridReady($event)" 
+                            (cellValueChanged)="onCellValueChanged($event)"
+                            (cellClicked)="onCellClicked($event)">
                         </ag-grid-angular>
                         }@else{
 

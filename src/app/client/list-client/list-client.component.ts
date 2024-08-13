@@ -79,6 +79,7 @@ export class ListClientComponent implements OnInit {
               this.itGstClients = [];
               this.allClients = [];
             } else if (this.clientType === 'gst-it') {
+              console.log(res);
               this.itGstClients = res;
               this.itClients = [];
               this.gstClients = [];
@@ -196,7 +197,7 @@ export class ListClientComponent implements OnInit {
       headerName: 'Name', sortable: true, filter: true, pinned: 'left'
     },
     { field: 'father', headerName: 'Father', sortable: false, filter: true },
-    { field: 'fileNoIt', headerName: 'File No.', sortable: true, filter: true },
+    { field: 'fileNoIt', headerName: 'IT File No.', sortable: true, filter: true },
     { field: 'mob1', headerName: 'Mobile', sortable: false, filter: true },
     { field: 'email', headerName: 'Email', sortable: false, filter: true },
     { field: 'password', headerName: 'Email Password', sortable: false, filter: true },
@@ -213,7 +214,7 @@ export class ListClientComponent implements OnInit {
     { field: 'gstUserName', headerName: 'GST Username', sortable: false, filter: true },
     { field: 'gstPassword', headerName: 'GST password', sortable: false, filter: true },
     { field: 'gstNumber', headerName: 'GST No.', sortable: false, filter: true },
-    { field: 'gstFileNo', headerName: 'File No.', sortable: true, filter: true },
+    { field: 'gstFileNo', headerName: 'GST File No.', sortable: true, filter: true },
     { field: 'pan', headerName: 'PAN', sortable: false, filter: true },
     { field: 'passwordIt', headerName: 'IT password', sortable: false, filter: true },
     {
@@ -293,6 +294,7 @@ export class ListClientComponent implements OnInit {
       sortable: true,
       filter: true,
       width: 100,
+      editable: true,
       valueFormatter: params => params.value ? 'Active' : 'Deactivated'
     },
   ]
@@ -316,7 +318,18 @@ export class ListClientComponent implements OnInit {
     }
   }
 
+  onCellValueChanged(event: any) {
+    const updatedData = {
+      id: event.data.id,
+      active: event.newValue
+    };
+    console.log(updatedData);
+  }
+
   getEmailVendor(email: string):string{
+    if (!email) {
+      return ''; // or some default value
+    }
     const mailMap = new Map();
     mailMap.set("@gmail", "https://mail.google.com");
     mailMap.set("@yahoo", "https://login.yahoo.com");
