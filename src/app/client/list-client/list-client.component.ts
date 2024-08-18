@@ -8,11 +8,12 @@ import { ClientBase, GstDtoRead, ItDtoRead, ItGstDtoRead } from '../../dto/clien
 import { HttpService } from '../../services/http.service';
 import { catchError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { DetailModalComponent } from '../detail-modal/detail-modal.component';
 
 @Component({
   selector: 'app-list-client',
   standalone: true,
-  imports: [AgGridModule, DashLayoutComponent, RouterLink],
+  imports: [AgGridModule, DashLayoutComponent, RouterLink, DetailModalComponent],
   templateUrl: './list-client.component.html',
   styleUrl: './list-client.component.css'
 })
@@ -24,6 +25,7 @@ export class ListClientComponent implements OnInit {
   allClients: ClientBase[] = [];
   gettingData = false;
   gridOptions!: GridOptions;
+  clientIdForModal! : number;
   private gridApi: any;
 
   constructor(private activatedRoute: ActivatedRoute,
@@ -289,6 +291,22 @@ export class ListClientComponent implements OnInit {
       }
     },
     {
+      field: 'id',
+      headerName: 'Details',
+      width: 100,
+      cellRenderer: (params: { value: any; }) => {
+        const button = document.createElement('button');
+        button.textContent = 'Details';
+        button.className = 'btn btn-sm btn-primary';
+        button.dataset['bsToggle'] = 'modal';
+        button.dataset['bsTarget'] = '#exampleModal';
+        button.addEventListener('click', () => {
+          this.openModal(params.value);
+        });
+        return button;
+      }
+    },
+    {
       field: 'isActive',
       headerName: 'Active',
       sortable: true,
@@ -303,19 +321,31 @@ export class ListClientComponent implements OnInit {
     return this.fullNameService.getFullName(fname, mname, lname);
   }
 
+  openModal(id: number) {
+    // Open the modal with the client details
+    console.log(id);
+    this.clientIdForModal = id;
+  }
+
   async onCellClicked(event: any) {
     const rowIndex = event.node.rowIndex;
     const colField = event.colDef.field;
     const cellValue = event.value; // Directly get the cell value from the event
 
-    console.log(`Row Index: ${rowIndex}, Column Field: ${colField}, Cell Value: ${cellValue}`);
+    const skipColsHeadings = ['Details', 'Edit'];
 
-    try {
-      await navigator.clipboard.writeText(cellValue);
-      console.log('Cell value copied to clipboard');
-    } catch (err) {
-      console.error('Failed to copy text: ', err);
+  //  console.log(`Row Index: ${rowIndex}, Column Field: ${colField}, Cell Value: ${cellValue}`);
+    let colHeading = event.column.getColDef().headerName;
+
+    if (!skipColsHeadings.includes(colHeading)) {
+      try {
+        await navigator.clipboard.writeText(cellValue);
+        console.log('Cell value copied to clipboard');
+      } catch (err) {
+        console.error('Failed to copy text: ', err);
+      }
     }
+  //  console.log(`Column Heading is : ${colHeading}`);
   }
 
   onCellValueChanged(event: any) {

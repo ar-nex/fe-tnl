@@ -1,0 +1,213 @@
+<div class="modal fade modal-lg" id="exampleModal" tabindex="-1"
+  aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-theme="dark">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">Client's Details</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        @if(dto !== undefined){
+        <h4 class="card-title text-uppercase text-white">
+          {{getFullName(dto)}} |
+          @if(dto.clType == 0){
+            GST
+            @if(dto.gstFileNo != null){| {{dto.gstFileNo}}}
+          } @else if(dto.clType == 1){
+            IT 
+            @if(dto.fileNoIt != null){| {{dto.fileNoIt}}}
+          } @else if (dto.clType == 2){
+            IT 
+            @if(dto.fileNoIt != null){ ({{dto.fileNoIt}})}
+            & GST
+            @if(dto.gstFileNo != null){({{dto.gstFileNo}})}
+          }
+        </h4>
+        <hr>
+        <table class="table table-borderless">
+          <colgroup>
+            <col style="width: 1%;">
+            <col style="width: 1%;">
+            <col>
+          </colgroup>
+          <tbody>
+            <tr class="m-0">
+              <td class="p-0 text-end"><strong>👤Name</strong></td>
+              <td class="py-0 px-2">:</td>
+              <td class="p-0 px-1">{{getFullName(dto)}}</td>
+            </tr>
+            <tr class="m-0">
+              <td class="p-0 text-end"><strong>Father Name</strong></td>
+              <td class="py-0 px-2">:</td>
+              <td class="p-0 px-1">{{dto.father}}</td>
+            </tr>
+            <tr class="m-0">
+              <td class="p-0 text-end"><strong>👷Profession</strong></td>
+              <td class="py-0 px-2">:</td>
+              <td class="p-0 px-1">{{dto.business}}</td>
+            </tr>
+            <tr class="m-0">
+              <td class="p-0 text-end"><strong>🎂Dob</strong></td>
+              <td class="py-0 px-2">:</td>
+              <td class="p-0 px-1">{{dto.dob | date}} <span class="text-muted">({{dto.dob | date:'dd-MM-YYYY'}})</span>
+              </td>
+            </tr>
+            <tr class="m-0">
+              <td class="p-0 text-end"><strong>Gender</strong></td>
+              <td class="py-0 px-2">:</td>
+              <td class="p-0 px-1">{{dto.gender}}</td>
+            </tr>
+            <tr class="m-0">
+              <td class="p-0 text-end"><strong>📱Mobile</strong></td>
+              <td class="py-0 px-2">:</td>
+              <td class="p-0 px-1">{{dto.mob1}}</td>
+            </tr>
+            <tr class="m-0">
+              <td class="p-0 text-end"><strong>📧Email</strong></td>
+              <td class="py-0 px-2">:</td>
+              <td class="p-0 px-1">{{dto.email}} <button class="btn btn-sm" (click)="copyContent('email')"><i
+                    class="bi bi-copy"></i></button></td>
+            </tr>
+            <tr class="m-0">
+              <td class="p-0 text-end"><strong>Email's Password</strong></td>
+              <td class="py-0 px-2">:</td>
+              <td class="p-0 px-1">{{dto.password}} <button class="btn btn-sm" (click)="copyContent('password')"><i
+                    class="bi bi-copy"></i></button></td>
+            </tr>
+            <tr class="m-0">
+              <td class="p-0 text-end"><strong>🪪PAN</strong></td>
+              <td class="py-0 px-2">:</td>
+              <td class="p-0 px-1">{{dto.password}} <button class="btn btn-sm" (click)="copyContent('pan')"><i
+                    class="bi bi-copy"></i></button></td>
+            </tr>
+            <tr class="m-0">
+              <td class="p-0 text-end"><strong>Aadhaar</strong></td>
+              <td class="py-0 px-2">:</td>
+              <td class="p-0 px-1">{{dto.aadhaar}}</td>
+            </tr>
+           
+            @if(dto.clType == 0 || dto.clType == 2){
+              <tr>
+                <td colspan="3">
+                  <hr>
+                </td>
+              </tr>
+              <tr class="m-0">
+                <td class="p-0 text-end"><strong>GST Number</strong></td>
+                <td class="py-0 px-2">:</td>
+                <td class="p-0 px-1">{{dto.gstNumber}}</td>
+              </tr>
+              <tr class="m-0">
+                <td class="p-0 text-end"><strong>Registration Date</strong></td>
+                <td class="py-0 px-2">:</td>
+                <td class="p-0 px-1">{{dto.gstRegisDate | date}} <span class="text-muted">({{dto.gstRegisDate | date:'dd-MM-YYYY'}})</span>
+                </td>
+              </tr>
+              <tr class="m-0">
+                <td class="p-0 text-end"><strong>GST Username</strong></td>
+                <td class="py-0 px-2">:</td>
+                <td class="p-0 px-1">{{dto.gstUserName}} <button class="btn btn-sm" (click)="copyContent('gst-username')"><i
+                      class="bi bi-copy"></i></button></td>
+              </tr>
+              <tr class="m-0">
+                <td class="p-0 text-end"><strong>GST Password</strong></td>
+                <td class="py-0 px-2">:</td>
+                <td class="p-0 px-1">{{dto.gstPassword}} <button class="btn btn-sm" (click)="copyContent('gst-password')"><i
+                      class="bi bi-copy"></i></button></td>
+              </tr>
+              <tr class="m-0">
+                <td class="p-0 text-end"><strong>GST File No.</strong></td>
+                <td class="py-0 px-2">:</td>
+                <td class="p-0 px-1">{{dto.gstFileNo}}</td>
+              </tr>
+              <tr class="m-0">
+                <td class="p-0 text-end"><strong>GST Type</strong></td>
+                <td class="py-0 px-2">:</td>
+                <td class="p-0 px-1">{{dto.gstType}}</td>
+              </tr>
+              <tr class="m-0">
+                <td class="p-0 text-end"><strong>Auditable</strong></td>
+                <td class="py-0 px-2">:</td>
+                <td class="p-0 px-1">{{dto.gstAuditNoAudit}}</td>
+              </tr>
+            }
+            @if(dto.clType == 1 || dto.clType == 2){
+              <tr>
+                <td colspan="3">
+                  <hr>
+                </td>
+              </tr>
+              <tr class="m-0">
+                <td class="p-0 text-end"><strong>IT Password</strong></td>
+                <td class="py-0 px-2">:</td>
+                <td class="p-0 px-1">{{dto.passwordIt}} <button class="btn btn-sm" (click)="copyContent('it-password')"><i
+                      class="bi bi-copy"></i></button></td>
+              </tr>
+              <tr class="m-0">
+                <td class="p-0 text-end"><strong>File No.</strong></td>
+                <td class="py-0 px-2">:</td>
+                <td class="p-0 px-1">{{dto.fileNoIt}}</td>
+              </tr>
+              <tr class="m-0">
+                <td class="p-0 text-end"><strong>Auditable</strong></td>
+                <td class="py-0 px-2">:</td>
+                <td class="p-0 px-1">{{dto.auditNoAuditIT}}</td>
+              </tr>
+            }
+            <tr>
+              <td colspan="3">
+                <hr>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3">
+                <h5>Address</h5>
+              </td>
+            </tr>
+            <tr class="m-0">
+              <td class="p-0 text-end"><strong>Addr. Lane 1</strong></td>
+              <td class="py-0 px-2">:</td>
+              <td class="p-0 px-1">{{dto.addr1}}</td>
+            </tr>
+            <tr class="m-0">
+              <td class="p-0 text-end"><strong>Addr. Lane 2</strong></td>
+              <td class="py-0 px-2">:</td>
+              <td class="p-0 px-1">{{dto.addr2}}</td>
+            </tr>
+            <tr class="m-0">
+              <td class="p-0 text-end"><strong>PO</strong></td>
+              <td class="py-0 px-2">:</td>
+              <td class="p-0 px-1">{{dto.po}}</td>
+            </tr>
+            <tr class="m-0">
+              <td class="p-0 text-end"><strong>PIN</strong></td>
+              <td class="py-0 px-2">:</td>
+              <td class="p-0 px-1">{{dto.pin}}</td>
+            </tr>
+            <tr class="m-0">
+              <td class="p-0 text-end"><strong>Police Station</strong></td>
+              <td class="py-0 px-2">:</td>
+              <td class="p-0 px-1">{{dto.ps}}</td>
+            </tr>
+            <tr class="m-0">
+              <td class="p-0 text-end"><strong>District</strong></td>
+              <td class="py-0 px-2">:</td>
+              <td class="p-0 px-1">{{dto.dist}}</td>
+            </tr>
+            <tr class="m-0">
+              <td class="p-0 text-end"><strong>State</strong></td>
+              <td class="py-0 px-2">:</td>
+              <td class="p-0 px-1">{{dto.state}}</td>
+            </tr>
+          </tbody>
+        </table>
+        }
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="exportModalToPdf()"><i class="bi bi-file-earmark-pdf"></i>Export to PDF</button>
+      </div>
+    </div>
+  </div>
+</div>

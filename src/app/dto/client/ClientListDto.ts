@@ -39,3 +39,20 @@ export interface ClientBase {
     gstRegisDate: Date;
     gstFileNo: string | null;
   }
+
+  export interface clientDetailRead extends ItGstDtoRead{
+    dob: Date | null
+    gender: string | null
+    business : string | null
+    gstType: string | null
+    gstAuditNoAudit: string | null
+    auditNoAuditIT: string | null
+    addr1: string | null
+    addr2: string | null
+    po: string| null
+    ps: string | null
+    pin: string | null
+    dist: string | null
+    state: string | null
+
+  }
