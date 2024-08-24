@@ -9,11 +9,13 @@ import { HttpService } from '../../services/http.service';
 import { catchError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { DetailModalComponent } from '../detail-modal/detail-modal.component';
+import { ExcelService } from '../../services/excel.service';
+import { EditModalComponent } from "../edit-modal/edit-modal.component";
 
 @Component({
   selector: 'app-list-client',
   standalone: true,
-  imports: [AgGridModule, DashLayoutComponent, RouterLink, DetailModalComponent],
+  imports: [AgGridModule, DashLayoutComponent, RouterLink, DetailModalComponent, EditModalComponent],
   templateUrl: './list-client.component.html',
   styleUrl: './list-client.component.css'
 })
@@ -26,11 +28,13 @@ export class ListClientComponent implements OnInit {
   gettingData = false;
   gridOptions!: GridOptions;
   clientIdForModal! : number;
+  cientIdForEdit! : number
   private gridApi: any;
 
   constructor(private activatedRoute: ActivatedRoute,
     private httpService: HttpService,
     private toster: ToastrService,
+    private excelService: ExcelService,
     private fullNameService: FullNameService) { }
 
   ngOnInit(): void {
@@ -134,6 +138,22 @@ export class ListClientComponent implements OnInit {
       }
     },
     {
+      field: 'id',
+      headerName: 'Details',
+      width: 100,
+      cellRenderer: (params: { value: any; }) => {
+        const button = document.createElement('button');
+        button.textContent = 'Details';
+        button.className = 'btn btn-sm btn-primary';
+        button.dataset['bsToggle'] = 'modal';
+        button.dataset['bsTarget'] = '#exampleModal';
+        button.addEventListener('click', () => {
+          this.openModal(params.value);
+        });
+        return button;
+      }
+    },
+    {
       field: 'isActive',
       headerName: 'Active',
       sortable: true,
@@ -177,6 +197,22 @@ export class ListClientComponent implements OnInit {
       width: 60,
       cellRenderer: (params: { value: any; }) => {
         return `<a href="/client/edit/${params.value}">Edit</a>`;
+      }
+    },
+    {
+      field: 'id',
+      headerName: 'Details',
+      width: 100,
+      cellRenderer: (params: { value: any; }) => {
+        const button = document.createElement('button');
+        button.textContent = 'Details';
+        button.className = 'btn btn-sm btn-primary';
+        button.dataset['bsToggle'] = 'modal';
+        button.dataset['bsTarget'] = '#exampleModal';
+        button.addEventListener('click', () => {
+          this.openModal(params.value);
+        });
+        return button;
       }
     },
     {
@@ -225,6 +261,22 @@ export class ListClientComponent implements OnInit {
       width: 60,
       cellRenderer: (params: { value: any; }) => {
         return `<a href="/client/edit/${params.value}">Edit</a>`;
+      }
+    },
+    {
+      field: 'id',
+      headerName: 'Details',
+      width: 100,
+      cellRenderer: (params: { value: any; }) => {
+        const button = document.createElement('button');
+        button.textContent = 'Details';
+        button.className = 'btn btn-sm btn-primary';
+        button.dataset['bsToggle'] = 'modal';
+        button.dataset['bsTarget'] = '#exampleModal';
+        button.addEventListener('click', () => {
+          this.openModal(params.value);
+        });
+        return button;
       }
     },
     {
@@ -284,7 +336,7 @@ export class ListClientComponent implements OnInit {
     
     {
       field: 'id',
-      headerName: 'Edit',
+      headerName: 'Update',
       width: 60,
       cellRenderer: (params: { value: any; }) => {
         return `<a href="/client/edit/${params.value}">Edit</a>`;
@@ -302,6 +354,22 @@ export class ListClientComponent implements OnInit {
         button.dataset['bsTarget'] = '#exampleModal';
         button.addEventListener('click', () => {
           this.openModal(params.value);
+        });
+        return button;
+      }
+    },
+    {
+      field: 'id',
+      headerName: 'Edit',
+      width: 100,
+      cellRenderer: (params: { value: any; }) => {
+        const button = document.createElement('button');
+        button.textContent = 'Edit';
+        button.className = 'btn btn-sm btn-warning';
+        button.dataset['bsToggle'] = 'modal';
+        button.dataset['bsTarget'] = '#editModal';
+        button.addEventListener('click', () => {
+          this.openEditModal(params.value);
         });
         return button;
       }
@@ -325,6 +393,12 @@ export class ListClientComponent implements OnInit {
     // Open the modal with the client details
     console.log(id);
     this.clientIdForModal = id;
+  }
+
+  openEditModal(id: number) {
+    // Open the modal with the client details
+    console.log(id);
+    this.cientIdForEdit = id;
   }
 
   async onCellClicked(event: any) {
@@ -390,4 +464,9 @@ export class ListClientComponent implements OnInit {
     };
     this.gridApi.exportDataAsCsv(params);
   }
+
+  exportToExcel(): void {
+    this.excelService.exportAsExcelFile(this.itClients, 'sample');
+  }
+
 }

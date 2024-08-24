@@ -54,5 +54,9 @@ export interface ClientBase {
     pin: string | null
     dist: string | null
     state: string | null
+  }
 
+  export interface clientDetailedWrite extends clientDetailRead{
+    id: number,
+    panadhrLink: boolean
   }

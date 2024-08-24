@@ -2,9 +2,8 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { DashLayoutComponent } from '../../dash-layout/dash-layout.component';
 import { RouterLink } from '@angular/router';
 import { HttpService } from '../../services/http.service';
-import { ConstantsService } from '../../services/constants.service';
 import { DistrictDto, StateDto } from '../../dto/places/placesDto';
-import { audit, catchError } from 'rxjs';
+import { catchError } from 'rxjs';
 import { BusinessType } from '../../dto/utility/BusinessTypes';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -45,8 +44,7 @@ export class AddClientComponent implements OnInit {
   constructor(private httpService: HttpService,
     private toastr: ToastrService,
     private fb: FormBuilder,
-    private clientDtoService: ClientDtoService,
-    private constants: ConstantsService) {
+    private clientDtoService: ClientDtoService) {
     this.buildClientForm();
   }
 
