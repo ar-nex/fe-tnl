@@ -8,6 +8,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ClientDtoService } from '../../services/client-dto.service';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
+import { updateGstClientDto, updateItandGstClientDto, updateItClientDto } from '../../dto/client/ClientDTO';
 
 
 @Component({
@@ -181,7 +182,106 @@ export class EditModalComponent implements OnChanges, OnInit {
       .add()
   }
 
+
   getClientDetails(): void {
+    if (this.clientId > 0) {
+      this.httpService.get(`clients/${this.clientId}`)
+        .pipe(
+          catchError(error => {
+            console.log(error);
+            throw error;
+          })
+        )
+        .subscribe((res: any) => {
+          this.dto = res;
+          console.log(this.dto);
+          this.patchClientFormValues(this.dto);
+          this.handleClientType(this.dto.clType);
+        })
+        .add()
+    }
+  }
+  
+  private patchClientFormValues(dto: clientDetailedWrite): void {
+    this.clientForm.patchValue({
+      id: dto.id,
+      firstName: dto.fname,
+      middleName: dto.mname == null ? "" : dto.mname,
+      lastName: dto.lname == null ? "" : dto.lname,
+      fatherName: dto.father == null ? "" : dto.father,
+      dob: dto.dob,
+      gender: dto.gender,
+      mobile: dto.mob1,
+      email: dto.email,
+      password: dto.password,
+      aadhaar: dto.aadhaar == null ? "" : dto.aadhaar,
+      pan: dto.pan,
+      panadhrLink: dto.panadhrLink,
+      business: dto.businessId,
+      state: dto.stateId,
+      add1: dto.addr1 == null ? "" : dto.addr1,
+      addr2: dto.addr2 == null ? "" : dto.addr2,
+      po: dto.po == null ? "" : dto.po,
+      pin: dto.pin == null ? "" : dto.pin,
+      ps: dto.ps == null ? "" : dto.ps,
+      dist: dto.distId,
+      clientType: dto.clType
+    });
+  }
+  
+  private handleClientType(clientType: number): void {
+    switch (clientType) {
+      case 0:
+        this.showGSTForm = true;
+        this.enableFormGroup('gst');
+        this.clientTypes = this.clientTypes.filter(type => type.id !== 1);
+        this.patchGSTFormValues(this.dto);
+        break;
+      case 1:
+        this.showITForm = true;
+        this.enableFormGroup('it');
+        this.clientTypes = this.clientTypes.filter(type => type.id !== 0);
+        this.patchITFormValues(this.dto);
+        break;
+      case 2:
+        this.clientForm.get('clientType')!.disable();
+        this.showITForm = true;
+        this.enableFormGroup('it');
+        this.showGSTForm = true;
+        this.enableFormGroup('gst');
+        this.patchITFormValues(this.dto);
+        this.patchGSTFormValues(this.dto);
+        break;
+    }
+  }
+  
+  private patchGSTFormValues(dto: clientDetailedWrite): void {
+    this.clientForm.patchValue({
+      gst: {
+        gstType: dto.gstType == null ? "" : dto.gstType,
+        auditable: dto.gstAuditNoAudit == null ? "" : dto.gstAuditNoAudit,
+        gstNumber: dto.gstNumber,
+        gstregDate: dto.gstRegisDate,
+        gstUserName: dto.gstUserName,
+        gstPassword: dto.gstPassword,
+        gstFileNo: dto.gstFileNo == null ? "" : dto.gstFileNo
+      }
+    });
+  }
+  
+  private patchITFormValues(dto: clientDetailedWrite): void {
+    this.clientForm.patchValue({
+      it: {
+        itType: dto.auditNoAuditIT == null ? "" : dto.auditNoAuditIT,
+        itPassword: dto.passwordIt == null ? "" : dto.passwordIt,
+        itFileNo: dto.fileNoIt == null ? "" : dto.fileNoIt
+      }
+    });
+  }
+
+
+
+  getClientDetails1(): void {
     if (this.clientId > 0) {
       this.httpService.get(`clients/${this.clientId}`)
         .pipe(
@@ -196,24 +296,24 @@ export class EditModalComponent implements OnChanges, OnInit {
           this.clientForm.patchValue({
             id: this.dto.id,
             firstName: this.dto.fname,
-            middleName: this.dto.mname,
-            lastName: this.dto.lname,
-            fatherName: this.dto.father,
+            middleName: this.dto.mname == null ? "" : this.dto.mname,
+            lastName: this.dto.lname == null ? "" : this.dto.lname,
+            fatherName: this.dto.father == null ? "" : this.dto.father,
             dob: this.dto.dob,
             gender: this.dto.gender,
             mobile: this.dto.mob1,
             email: this.dto.email,
             password: this.dto.password,
-            aadhaar: this.dto.aadhaar,
+            aadhaar: this.dto.aadhaar == null ? "": this.dto.aadhaar,
             pan: this.dto.pan,
             panadhrLink: this.dto.panadhrLink,
             business: this.dto.businessId,
             state: this.dto.stateId,
-            add1: this.dto.addr1,
-            addr2: this.dto.addr2,
-            po: this.dto.po,
-            pin: this.dto.pin,
-            ps: this.dto.ps,
+            add1: this.dto.addr1 == null ? "" : this.dto.addr1,
+            addr2: this.dto.addr2 == null ? "" : this.dto.addr2,
+            po: this.dto.po == null ? "" : this.dto.po,
+            pin: this.dto.pin == null ? "" : this.dto.pin,
+            ps: this.dto.ps == null ? "" : this.dto.ps,
             dist: this.dto.distId,
             clientType: this.dto.clType
           })
@@ -223,13 +323,13 @@ export class EditModalComponent implements OnChanges, OnInit {
             this.clientTypes = this.clientTypes.filter(type => type.id !== 1);
             this.clientForm.patchValue({
               gst: {
-                gstType: this.dto.gstType,
-                auditable: this.dto.gstAuditNoAudit,
+                gstType: this.dto.gstType == null ? "" : this.dto.gstType,
+                auditable: this.dto.gstAuditNoAudit == null ? "": this.dto.gstAuditNoAudit,
                 gstNumber: this.dto.gstNumber,
                 gstregDate: this.dto.gstRegisDate,
                 gstUserName: this.dto.gstUserName,
                 gstPassword: this.dto.gstPassword,
-                gstFileNo: this.dto.gstFileNo
+                gstFileNo: this.dto.gstFileNo == null ? "": this.dto.gstFileNo
               }
             })
           } else if (this.dto.clType == 1) {
@@ -238,9 +338,9 @@ export class EditModalComponent implements OnChanges, OnInit {
             this.clientTypes = this.clientTypes.filter(type => type.id !== 0);
             this.clientForm.patchValue({
               it: {
-                itType: this.dto.auditNoAuditIT,
-                itPassword: this.dto.passwordIt,
-                itFileNo: this.dto.fileNoIt
+                itType: this.dto.auditNoAuditIT == null ? "" : this.dto.auditNoAuditIT,
+                itPassword: this.dto.passwordIt == null ? "" : this.dto.passwordIt,
+                itFileNo: this.dto.fileNoIt == null ? "" : this.dto.fileNoIt
               }
             })
           }
@@ -252,18 +352,18 @@ export class EditModalComponent implements OnChanges, OnInit {
              this.enableFormGroup('gst')
              this.clientForm.patchValue({
               gst: {
-                gstType: this.dto.gstType,
-                auditable: this.dto.gstAuditNoAudit,
+                gstType: this.dto.gstType == null ? "" : this.dto.gstType,
+                auditable: this.dto.gstAuditNoAudit == null ? "": this.dto.gstAuditNoAudit,
                 gstNumber: this.dto.gstNumber,
                 gstregDate: this.dto.gstRegisDate,
                 gstUserName: this.dto.gstUserName,
                 gstPassword: this.dto.gstPassword,
-                gstFileNo: this.dto.gstFileNo
+                gstFileNo: this.dto.gstFileNo == null ? "": this.dto.gstFileNo
               },
               it: {
-                itType: this.dto.auditNoAuditIT,
-                itPassword: this.dto.passwordIt,
-                itFileNo: this.dto.fileNoIt
+                itType: this.dto.auditNoAuditIT == null ? "" : this.dto.auditNoAuditIT,
+                itPassword: this.dto.passwordIt == null ? "" : this.dto.passwordIt,
+                itFileNo: this.dto.fileNoIt == null ? "" : this.dto.fileNoIt
               }
             })
           }
@@ -272,4 +372,71 @@ export class EditModalComponent implements OnChanges, OnInit {
     }
 
   }
+
+  onSubmit():void{
+    if (this.clientForm.valid) {
+      let cltype = this.clientForm.get('clientType')?.value;
+      if(cltype == '1'){
+        const itdto: updateItClientDto = {
+          ...this.clientDtoService.generateItClientDto(this.clientForm),
+          id: this.clientId
+        }
+        this.putClientData("clients/it", itdto);
+      }else if(cltype == 0){
+        const gstdto: updateGstClientDto = {
+          ...this.clientDtoService.generateGstClientDto(this.clientForm),
+          id: this.clientId
+        }
+      }else if(cltype == 2){
+        const gstitdto : updateItandGstClientDto = {
+          ...this.clientDtoService.generateITGstClientDto(this.clientForm),
+          id: this.clientId
+        }
+      }
+    }
+  }
+
+
+  putClientData(urlseg: string, payload: any):void{
+    this.dataSubmitting = true;
+    this.httpService.put(urlseg, payload)
+    .pipe(
+      catchError(error => {
+        console.error(error);
+        if (error.error?.duplicates) {
+          console.error('Duplicate errors:', error.error.duplicates);
+          this.toastr.error('Duplicate errors:', error.error.duplicates);
+          let dups = error.error.duplicates;
+          if(dups.includes("PAN")){
+            this.isPanDuplicate = true;
+          }
+          if(dups.includes("AADHAAR")){
+            this.isAadhaarDuplicate = true;
+          }
+          if(dups.includes("GST NUMBER")){
+            this.isGstNoDuplicate = true;
+          }
+          if(dups.includes("GST USER NAME")){
+            this.isGstUserNameDuplicate = true;
+          }
+          
+        }else{
+          this.toastr.error('Error:', error.error);
+        }
+        this.dataSubmitting = false;
+        throw error;
+      })
+    )
+    .subscribe(
+      (res: any)=>{
+        console.log(res);
+        this.toastr.success("Client added successfully.");
+        this.dataSubmitting = false;
+      }
+    )
+    .add(
+      () => {this.dataSubmitting = false;}
+    )
+  }
+
 }

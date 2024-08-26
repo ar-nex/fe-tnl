@@ -21,10 +21,18 @@ export interface clientDto{
     panadhrLink: boolean
 }
 
+export interface updateClientDto extends clientDto{
+    id: number
+}
+
 export interface itClientDto extends clientDto{
     passwordIt: string,
     auditNoAudit: string,
     fileNoIt: string
+}
+
+export interface updateItClientDto extends itClientDto{
+    id: number
 }
 
 export interface gstClientDto extends clientDto{
@@ -37,8 +45,17 @@ export interface gstClientDto extends clientDto{
     GstAuditNoAudit: string
 }
 
+export interface updateGstClientDto extends gstClientDto{
+    id: number
+}
+
+
 export interface ITandGstClientDto extends gstClientDto{
     passwordIt: string,
     auditNoAudIt: string,
     fileNoIt: string
+}
+
+export interface updateItandGstClientDto extends ITandGstClientDto{
+    id:number
 }

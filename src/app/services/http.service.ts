@@ -34,6 +34,18 @@ export class HttpService {
     return this.httpClient.post(this.apiBaseUrl+uriSegment, payload, httpOptions);
   }
 
+
+  public put(uriSegment: string, payload: any) : Observable<any>{
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization' : 'Bearer '+this.sessionStorageService.get(this.constants.SS_TOKEN_KEY)
+      }),
+      body: payload
+    }
+    return this.httpClient.put(this.apiBaseUrl+uriSegment, payload, httpOptions);
+  }
+
   public get(uriSegment: string):Observable<any>{
     const httpOptions = {
       headers: new HttpHeaders({

@@ -15,7 +15,7 @@ export class ClientDtoService {
     return {
       aadhaar: formGroup.get('aadhaar')?.value == "" ? null : formGroup.get('aadhaar')?.value,
       fname: formGroup.get('firstName')?.value.toUpperCase(),
-      mname: formGroup.get('middleName')?.value == "" ? null : formGroup.get('middleName')?.value.toUpperCase(),
+      mname: formGroup.get('middleName')?.value == "" || formGroup.get('middleName')?.value == null ? null : formGroup.get('middleName')?.value.toUpperCase(),
       lname: formGroup.get('lastName')?.value == "" ? null : formGroup.get('lastName')?.value.toUpperCase(),
       father: formGroup.get('fatherName')?.value == "" ? null : formGroup.get('fatherName')?.value.toUpperCase(),
       dob: formGroup.get('dob')?.value == "" ? null : formGroup.get('dob')?.value,
@@ -41,7 +41,6 @@ export class ClientDtoService {
     const commonFields = this.getCommonFields(formGroup);
     return commonFields;
   }
-
   generateItClientDto(formGroup: FormGroup): itClientDto {
     let dto: itClientDto = {
       ...this.getCommonFields(formGroup),
