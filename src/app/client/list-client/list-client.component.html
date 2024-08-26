@@ -49,7 +49,7 @@
 
         <app-detail-modal [clientId]="clientIdForModal"></app-detail-modal>
         
-        <app-edit-modal [clientId]="cientIdForEdit"></app-edit-modal>
+        <app-edit-modal [clientId]="clientIdForEdit" (updatedDto)="onUpdatedDto($event)"></app-edit-modal>
 
     </section>
 </app-dash-layout>

@@ -4,7 +4,7 @@ import { ColDef, GridOptions } from 'ag-grid-community';
 import { DashLayoutComponent } from '../../dash-layout/dash-layout.component';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FullNameService } from '../../services/full-name.service';
-import { ClientBase, GstDtoRead, ItDtoRead, ItGstDtoRead } from '../../dto/client/ClientListDto';
+import { ClientBase, clientDetailedWrite, GstDtoRead, ItDtoRead, ItGstDtoRead } from '../../dto/client/ClientListDto';
 import { HttpService } from '../../services/http.service';
 import { catchError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
@@ -28,7 +28,7 @@ export class ListClientComponent implements OnInit {
   gettingData = false;
   gridOptions!: GridOptions;
   clientIdForModal! : number;
-  cientIdForEdit! : number
+  clientIdForEdit! : number
   private gridApi: any;
 
   constructor(private activatedRoute: ActivatedRoute,
@@ -85,7 +85,6 @@ export class ListClientComponent implements OnInit {
               this.itGstClients = [];
               this.allClients = [];
             } else if (this.clientType === 'gst-it') {
-              console.log(res);
               this.itGstClients = res;
               this.itClients = [];
               this.gstClients = [];
@@ -131,14 +130,6 @@ export class ListClientComponent implements OnInit {
     { field: 'passwordIt', headerName: 'IT password', sortable: false, filter: true },
     {
       field: 'id',
-      headerName: 'Edit',
-      width: 60,
-      cellRenderer: (params: { value: any; }) => {
-        return `<a href="/client/edit/${params.value}">Edit</a>`;
-      }
-    },
-    {
-      field: 'id',
       headerName: 'Details',
       width: 100,
       cellRenderer: (params: { value: any; }) => {
@@ -149,6 +140,22 @@ export class ListClientComponent implements OnInit {
         button.dataset['bsTarget'] = '#exampleModal';
         button.addEventListener('click', () => {
           this.openModal(params.value);
+        });
+        return button;
+      }
+    },
+    {
+      field: 'id',
+      headerName: 'Edit',
+      width: 100,
+      cellRenderer: (params: { value: any; }) => {
+        const button = document.createElement('button');
+        button.textContent = 'Edit';
+        button.className = 'btn btn-sm btn-warning';
+        button.dataset['bsToggle'] = 'modal';
+        button.dataset['bsTarget'] = '#editModal';
+        button.addEventListener('click', () => {
+          this.openEditModal(params.value);
         });
         return button;
       }
@@ -193,14 +200,6 @@ export class ListClientComponent implements OnInit {
     { field: 'gstNumber', headerName: 'GST No.', sortable: false, filter: true },
     {
       field: 'id',
-      headerName: 'Edit',
-      width: 60,
-      cellRenderer: (params: { value: any; }) => {
-        return `<a href="/client/edit/${params.value}">Edit</a>`;
-      }
-    },
-    {
-      field: 'id',
       headerName: 'Details',
       width: 100,
       cellRenderer: (params: { value: any; }) => {
@@ -211,6 +210,22 @@ export class ListClientComponent implements OnInit {
         button.dataset['bsTarget'] = '#exampleModal';
         button.addEventListener('click', () => {
           this.openModal(params.value);
+        });
+        return button;
+      }
+    },
+    {
+      field: 'id',
+      headerName: 'Edit',
+      width: 100,
+      cellRenderer: (params: { value: any; }) => {
+        const button = document.createElement('button');
+        button.textContent = 'Edit';
+        button.className = 'btn btn-sm btn-warning';
+        button.dataset['bsToggle'] = 'modal';
+        button.dataset['bsTarget'] = '#editModal';
+        button.addEventListener('click', () => {
+          this.openEditModal(params.value);
         });
         return button;
       }
@@ -257,14 +272,6 @@ export class ListClientComponent implements OnInit {
     { field: 'passwordIt', headerName: 'IT password', sortable: false, filter: true },
     {
       field: 'id',
-      headerName: 'Edit',
-      width: 60,
-      cellRenderer: (params: { value: any; }) => {
-        return `<a href="/client/edit/${params.value}">Edit</a>`;
-      }
-    },
-    {
-      field: 'id',
       headerName: 'Details',
       width: 100,
       cellRenderer: (params: { value: any; }) => {
@@ -275,6 +282,22 @@ export class ListClientComponent implements OnInit {
         button.dataset['bsTarget'] = '#exampleModal';
         button.addEventListener('click', () => {
           this.openModal(params.value);
+        });
+        return button;
+      }
+    },
+    {
+      field: 'id',
+      headerName: 'Edit',
+      width: 100,
+      cellRenderer: (params: { value: any; }) => {
+        const button = document.createElement('button');
+        button.textContent = 'Edit';
+        button.className = 'btn btn-sm btn-warning';
+        button.dataset['bsToggle'] = 'modal';
+        button.dataset['bsTarget'] = '#editModal';
+        button.addEventListener('click', () => {
+          this.openEditModal(params.value);
         });
         return button;
       }
@@ -333,15 +356,6 @@ export class ListClientComponent implements OnInit {
     },
     { field: 'pan', headerName: 'PAN', sortable: false, filter: true },
     { field: 'aadhaar', headerName: 'Aadhaar', sortable: false, filter: true },
-    
-    {
-      field: 'id',
-      headerName: 'Update',
-      width: 60,
-      cellRenderer: (params: { value: any; }) => {
-        return `<a href="/client/edit/${params.value}">Edit</a>`;
-      }
-    },
     {
       field: 'id',
       headerName: 'Details',
@@ -398,7 +412,7 @@ export class ListClientComponent implements OnInit {
   openEditModal(id: number) {
     // Open the modal with the client details
     console.log(id);
-    this.cientIdForEdit = id;
+    this.clientIdForEdit = id;
   }
 
   async onCellClicked(event: any) {
@@ -467,6 +481,48 @@ export class ListClientComponent implements OnInit {
 
   exportToExcel(): void {
     this.excelService.exportAsExcelFile(this.itClients, 'sample');
+  }
+
+  onUpdatedDto(dto: clientDetailedWrite) {
+    console.log('Received updated DTO:', dto);
+    
+    if(this.clientType === 'gst'){
+      const dtoIndex = this.gstClients.findIndex(itm => itm.id == this.clientIdForEdit)
+      if(dtoIndex !== -1){
+        const prevDto = this.gstClients[dtoIndex];
+        if(prevDto.clType == dto.clType){
+          this.gstClients[dtoIndex] = { ...this.gstClients[dtoIndex], ...dto };
+        }else{
+          this.gstClients = this.gstClients.splice(dtoIndex, 1);
+        }
+        this.itClients = [...this.itClients];
+      }
+
+    }else if(this.clientType === 'it'){
+      const dtoIndex = this.itClients.findIndex(itm => itm.id == this.clientIdForEdit)
+      if(dtoIndex !== -1){
+        const prevDto = this.itClients[dtoIndex];
+        if(prevDto.clType == dto.clType){
+          this.itClients[dtoIndex] = { ...this.itClients[dtoIndex], ...dto };
+        }else{
+          this.itClients = this.itClients.splice(dtoIndex, 1);
+        }
+        this.itClients = [...this.itClients];
+      }
+    }else if (this.clientType === 'gst-it'){
+      const dtoIndex = this.itGstClients.findIndex(itm => itm.id == this.clientIdForEdit)
+        if (dtoIndex !== -1) {
+          this.itGstClients[dtoIndex] = { ...this.itGstClients[dtoIndex], ...dto };
+        }
+        this.itGstClients = [...this.itGstClients];
+
+    }else if (this.clientType == 'all') {
+      const dtoIndex = this.allClients.findIndex(itm => itm.id == this.clientIdForEdit)
+        if (dtoIndex !== -1) {
+          this.allClients[dtoIndex] = { ...this.allClients[dtoIndex], ...dto };
+        }
+        this.allClients = [...this.allClients];
+    }
   }
 
 }

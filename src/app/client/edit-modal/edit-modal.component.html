@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5 text-white" id="editModalLabel">Edit Details</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" #closeEditModal data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <p>Client Id : {{clientId}}</p>
@@ -347,9 +347,19 @@
 
                     </section>
                     }
+                    @if(dataSubmitting){
+                    <button class="btn btn-primary" type="button" disabled>
+                        <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                        <span role="status">Loading...</span>
+                    </button>
+                    }@else {
                     <button type="button" class="btn btn-primary" (click)="onSubmit()">Update</button>
+                    }
                 </form>
             </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
+              </div>
         </div>
     </div>
 </div>

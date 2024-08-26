@@ -31,7 +31,7 @@ export class ClientDtoService {
 
       distId: formGroup.get('dist')?.value,
       pan: formGroup.get('pan')?.value.toUpperCase(),
-      clType: formGroup.get('clientType')?.value == "" ? null : Number(formGroup.get('clientType')?.value),
+      clType: formGroup.get('clientType')?.value === "" ? null : Number(formGroup.get('clientType')?.value),
       businessTypeId: formGroup.get('business')?.value,
       panadhrLink: formGroup.get('panadhrLink')?.value,
     };
@@ -57,7 +57,6 @@ export class ClientDtoService {
       gstUserName: formGroup.get('gst.gstUserName')?.value,
       gstPassword: formGroup.get('gst.gstPassword')?.value,
       gstType: formGroup.get('gst.gstType')?.value,
-
       gstNumber: formGroup.get('gst.gstNumber')?.value,
       gstRegisDate: formGroup.get('gst.gstregDate')?.value,
       gstFileNo: formGroup.get('gst.gstFileNo')?.value.toUpperCase(),

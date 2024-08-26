@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
 import { HttpService } from '../../services/http.service';
 import { catchError} from 'rxjs';
 import { clientDetailedWrite } from '../../dto/client/ClientListDto';
@@ -33,6 +33,9 @@ export class EditModalComponent implements OnChanges, OnInit {
   isAadhaarDuplicate = false;
   isGstNoDuplicate = false;
   isGstUserNameDuplicate = false;
+
+  @Output() updatedDto = new EventEmitter<clientDetailedWrite>();
+  @ViewChild('closeEditModal', {static: false}) closeEditModal! : ElementRef
 
   clientTypes = [
     {id: 1, name : "IT"},
@@ -279,100 +282,6 @@ export class EditModalComponent implements OnChanges, OnInit {
     });
   }
 
-
-
-  getClientDetails1(): void {
-    if (this.clientId > 0) {
-      this.httpService.get(`clients/${this.clientId}`)
-        .pipe(
-          catchError(error => {
-            console.log(error);
-            throw error;
-          })
-        )
-        .subscribe((res: any) => {
-          this.dto = res;
-          console.log(this.dto);
-          this.clientForm.patchValue({
-            id: this.dto.id,
-            firstName: this.dto.fname,
-            middleName: this.dto.mname == null ? "" : this.dto.mname,
-            lastName: this.dto.lname == null ? "" : this.dto.lname,
-            fatherName: this.dto.father == null ? "" : this.dto.father,
-            dob: this.dto.dob,
-            gender: this.dto.gender,
-            mobile: this.dto.mob1,
-            email: this.dto.email,
-            password: this.dto.password,
-            aadhaar: this.dto.aadhaar == null ? "": this.dto.aadhaar,
-            pan: this.dto.pan,
-            panadhrLink: this.dto.panadhrLink,
-            business: this.dto.businessId,
-            state: this.dto.stateId,
-            add1: this.dto.addr1 == null ? "" : this.dto.addr1,
-            addr2: this.dto.addr2 == null ? "" : this.dto.addr2,
-            po: this.dto.po == null ? "" : this.dto.po,
-            pin: this.dto.pin == null ? "" : this.dto.pin,
-            ps: this.dto.ps == null ? "" : this.dto.ps,
-            dist: this.dto.distId,
-            clientType: this.dto.clType
-          })
-          if (this.dto.clType == 0) {
-            this.showGSTForm = true;
-            this.enableFormGroup('gst')
-            this.clientTypes = this.clientTypes.filter(type => type.id !== 1);
-            this.clientForm.patchValue({
-              gst: {
-                gstType: this.dto.gstType == null ? "" : this.dto.gstType,
-                auditable: this.dto.gstAuditNoAudit == null ? "": this.dto.gstAuditNoAudit,
-                gstNumber: this.dto.gstNumber,
-                gstregDate: this.dto.gstRegisDate,
-                gstUserName: this.dto.gstUserName,
-                gstPassword: this.dto.gstPassword,
-                gstFileNo: this.dto.gstFileNo == null ? "": this.dto.gstFileNo
-              }
-            })
-          } else if (this.dto.clType == 1) {
-            this.showITForm = true;
-            this.enableFormGroup('it')
-            this.clientTypes = this.clientTypes.filter(type => type.id !== 0);
-            this.clientForm.patchValue({
-              it: {
-                itType: this.dto.auditNoAuditIT == null ? "" : this.dto.auditNoAuditIT,
-                itPassword: this.dto.passwordIt == null ? "" : this.dto.passwordIt,
-                itFileNo: this.dto.fileNoIt == null ? "" : this.dto.fileNoIt
-              }
-            })
-          }
-          else if(this.dto.clType == 2){
-             this.clientForm.get('clientType')!.disable();
-             this.showITForm = true;
-             this.enableFormGroup('it')
-             this.showGSTForm = true;
-             this.enableFormGroup('gst')
-             this.clientForm.patchValue({
-              gst: {
-                gstType: this.dto.gstType == null ? "" : this.dto.gstType,
-                auditable: this.dto.gstAuditNoAudit == null ? "": this.dto.gstAuditNoAudit,
-                gstNumber: this.dto.gstNumber,
-                gstregDate: this.dto.gstRegisDate,
-                gstUserName: this.dto.gstUserName,
-                gstPassword: this.dto.gstPassword,
-                gstFileNo: this.dto.gstFileNo == null ? "": this.dto.gstFileNo
-              },
-              it: {
-                itType: this.dto.auditNoAuditIT == null ? "" : this.dto.auditNoAuditIT,
-                itPassword: this.dto.passwordIt == null ? "" : this.dto.passwordIt,
-                itFileNo: this.dto.fileNoIt == null ? "" : this.dto.fileNoIt
-              }
-            })
-          }
-        })
-        .add()
-    }
-
-  }
-
   onSubmit():void{
     if (this.clientForm.valid) {
       let cltype = this.clientForm.get('clientType')?.value;
@@ -387,11 +296,13 @@ export class EditModalComponent implements OnChanges, OnInit {
           ...this.clientDtoService.generateGstClientDto(this.clientForm),
           id: this.clientId
         }
+        this.putClientData("clients/gst", gstdto);
       }else if(cltype == 2){
         const gstitdto : updateItandGstClientDto = {
           ...this.clientDtoService.generateITGstClientDto(this.clientForm),
           id: this.clientId
         }
+        this.putClientData("clients/gst", gstitdto);
       }
     }
   }
@@ -431,7 +342,15 @@ export class EditModalComponent implements OnChanges, OnInit {
       (res: any)=>{
         console.log(res);
         this.toastr.success("Client added successfully.");
+
+        this.isPanDuplicate = false;
+        this.isAadhaarDuplicate = false;
+        this.isGstNoDuplicate = false;
+        this.isGstUserNameDuplicate = false;
+
+        this.closeEditModal.nativeElement.click();
         this.dataSubmitting = false;
+        this.updatedDto.emit(payload);
       }
     )
     .add(
