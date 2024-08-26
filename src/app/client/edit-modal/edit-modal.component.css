@@ -1,0 +1,7 @@
+label{
+  color: #a2d2ff;
+}
+.mnd::after{
+    content: "*";
+    color: red;
+  }

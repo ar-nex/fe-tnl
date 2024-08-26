@@ -1,19 +1,19 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { HttpService } from '../../services/http.service';
-import { catchError, generate } from 'rxjs';
+import { catchError} from 'rxjs';
 import { clientDetailedWrite } from '../../dto/client/ClientListDto';
 import { DistrictDto, StateDto } from '../../dto/places/placesDto';
 import { BusinessType } from '../../dto/utility/BusinessTypes';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ClientDtoService } from '../../services/client-dto.service';
 import { ToastrService } from 'ngx-toastr';
-import { state } from '@angular/animations';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
   selector: 'app-edit-modal',
   standalone: true,
-  imports: [],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule],
   templateUrl: './edit-modal.component.html',
   styleUrl: './edit-modal.component.css'
 })
@@ -27,6 +27,17 @@ export class EditModalComponent implements OnChanges, OnInit {
   dataSubmitting = false;
   showITForm = false;
   showGSTForm = false;
+
+  isPanDuplicate = false;
+  isAadhaarDuplicate = false;
+  isGstNoDuplicate = false;
+  isGstUserNameDuplicate = false;
+
+  clientTypes = [
+    {id: 1, name : "IT"},
+    {id: 0, name : "GST"},
+    {id: 2, name : "IT & GST (both)"},
+  ]
 
 
   constructor(private httpService: HttpService,
@@ -42,6 +53,12 @@ export class EditModalComponent implements OnChanges, OnInit {
 
   ngOnInit(): void {
     this.getStates();
+    this.clientForm.get('clientType')!.valueChanges.subscribe(value => {
+      this.showHideFormGroups(value);
+    });
+    this.clientForm.get('state')!.valueChanges.subscribe(value => {
+      if(value > 0){this.getDistricts(value);}
+    })
   }
 
 
@@ -83,6 +100,49 @@ export class EditModalComponent implements OnChanges, OnInit {
         gstFileNo: [{ value: '', disabled: !this.showGSTForm }, Validators.maxLength(25)]
       })
     })
+  }
+
+  
+  showHideFormGroups(clientType: string) {
+    switch (clientType) {
+      case '1':
+        this.showITForm = true;
+        this.showGSTForm = false;
+        this.enableFormGroup('it');
+        this.disableFormGroup('gst');
+        break;
+      case '0':
+        this.showITForm = false;
+        this.showGSTForm = true;
+        this.enableFormGroup('gst');
+        this.disableFormGroup('it');
+        break;
+      case '2':
+        this.showITForm = true;
+        this.showGSTForm = true;
+        this.enableFormGroup('it');
+        this.enableFormGroup('gst');
+        break;
+      default:
+        this.showITForm = false;
+        this.showGSTForm = false;
+        this.disableFormGroup('it');
+        this.disableFormGroup('gst');
+    }
+  }
+  
+  enableFormGroup(groupName: string) {
+    const group = this.clientForm.get(groupName) as FormGroup;
+    Object.keys(group!.controls).forEach(controlName => {
+      group!.get(controlName)!.enable();
+    });
+  }
+  
+  disableFormGroup(groupName: string) {
+    const group = this.clientForm.get(groupName) as FormGroup;
+    Object.keys(group!.controls).forEach(controlName => {
+      group!.get(controlName)!.disable();
+    });
   }
 
 
@@ -147,17 +207,20 @@ export class EditModalComponent implements OnChanges, OnInit {
             aadhaar: this.dto.aadhaar,
             pan: this.dto.pan,
             panadhrLink: this.dto.panadhrLink,
-            business: this.dto.business,
-            state: this.dto.state,
+            business: this.dto.businessId,
+            state: this.dto.stateId,
             add1: this.dto.addr1,
             addr2: this.dto.addr2,
             po: this.dto.po,
             pin: this.dto.pin,
             ps: this.dto.ps,
-            dist: this.dto.dist,
+            dist: this.dto.distId,
             clientType: this.dto.clType
           })
-          if (this.dto.clType == 0 || this.dto.clType == 2) {
+          if (this.dto.clType == 0) {
+            this.showGSTForm = true;
+            this.enableFormGroup('gst')
+            this.clientTypes = this.clientTypes.filter(type => type.id !== 1);
             this.clientForm.patchValue({
               gst: {
                 gstType: this.dto.gstType,
@@ -169,8 +232,34 @@ export class EditModalComponent implements OnChanges, OnInit {
                 gstFileNo: this.dto.gstFileNo
               }
             })
-          } else if (this.dto.clType == 1 || this.dto.clType == 2) {
+          } else if (this.dto.clType == 1) {
+            this.showITForm = true;
+            this.enableFormGroup('it')
+            this.clientTypes = this.clientTypes.filter(type => type.id !== 0);
             this.clientForm.patchValue({
+              it: {
+                itType: this.dto.auditNoAuditIT,
+                itPassword: this.dto.passwordIt,
+                itFileNo: this.dto.fileNoIt
+              }
+            })
+          }
+          else if(this.dto.clType == 2){
+             this.clientForm.get('clientType')!.disable();
+             this.showITForm = true;
+             this.enableFormGroup('it')
+             this.showGSTForm = true;
+             this.enableFormGroup('gst')
+             this.clientForm.patchValue({
+              gst: {
+                gstType: this.dto.gstType,
+                auditable: this.dto.gstAuditNoAudit,
+                gstNumber: this.dto.gstNumber,
+                gstregDate: this.dto.gstRegisDate,
+                gstUserName: this.dto.gstUserName,
+                gstPassword: this.dto.gstPassword,
+                gstFileNo: this.dto.gstFileNo
+              },
               it: {
                 itType: this.dto.auditNoAuditIT,
                 itPassword: this.dto.passwordIt,

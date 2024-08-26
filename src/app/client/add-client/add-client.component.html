@@ -103,10 +103,10 @@
 
           <div class="col-md-3">
             <div class="form-input">
-              <label for="clmob">Aadhaar</label>
+              <label for="cladhr">Aadhaar</label>
               <input type="text" formControlName="aadhaar"
                 [ngClass]="{'is-invalid': clientForm.controls['aadhaar'].invalid && (clientForm.controls['aadhaar'].touched || clientForm.controls['aadhaar'].dirty)}"
-                id="clmob" placeholder="12 digits only">
+                id="cladhr" placeholder="12 digits only">
                 @if(isAadhaarDuplicate){
                   <small class="text-danger">Duplicate</small>
                 }
@@ -324,10 +324,10 @@
 
             <div class="col-md-3">
               <div class="form-input">
-                <label for="clitfile" class="mnd">GST No.</label>
+                <label for="gstno" class="mnd">GST No.</label>
                 <input type="text" formControlName="gstNumber"
                   [ngClass]="{'is-invalid': clientForm.get('gst.gstNumber')!.invalid && (clientForm.get('gst.gstNumber')!.touched || clientForm.get('gst.gstNumber')!.dirty)}"
-                  id="clitfile">
+                  id="gstno">
                   @if(isGstNoDuplicate){
                     <small class="text-danger">Duplicate</small>
                   }

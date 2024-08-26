@@ -44,6 +44,7 @@ export interface ClientBase {
     dob: Date | null
     gender: string | null
     business : string | null
+    businessId: number
     gstType: string | null
     gstAuditNoAudit: string | null
     auditNoAuditIT: string | null
@@ -53,7 +54,9 @@ export interface ClientBase {
     ps: string | null
     pin: string | null
     dist: string | null
+    distId: number
     state: string | null
+    stateId: number
   }
 
   export interface clientDetailedWrite extends clientDetailRead{
